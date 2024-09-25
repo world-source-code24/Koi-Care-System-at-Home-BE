@@ -53,7 +53,7 @@ namespace KoiCareSystemAtHome.Controllers
             var user = await _userRepository.GetUserByEmailAsync(email);
 
             await SignInUser(user);
-            return Ok(new { message = "Login successful", email = user.Email });
+            return Redirect("http://localhost:5173/");
     }
 
         private async Task SignInUser(UserTbl user)
@@ -89,7 +89,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return Unauthorized("Don't have user or incorrect password");
             }
-            return Ok(new { Message = "Login Successfully" });
+            return Ok(new {success=true, Message = "Login Successfully" });
         }
     }
 }

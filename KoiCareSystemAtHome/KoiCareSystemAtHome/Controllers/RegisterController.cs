@@ -82,11 +82,11 @@ namespace KoiCareSystemAtHome.Controllers
                 // Save the new user (implement SaveUserAsync in IUserRepository)
                 await _userRepository.SaveUserAsync(newUser);
 
-                return Ok(new { message = "Registion successful", email = registerDto.Email });
+                return Ok(new {success=true, message = "Registion successful", email = registerDto.Email });
             }
             else
             {
-                return BadRequest(new { message = "User already exists", email = registerDto.Email });
+                return BadRequest(new {success=false, message = "User already exists", email = registerDto.Email });
             }
         }
     }
