@@ -1,11 +1,12 @@
 ﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace KoiCareSystemAtHome.Repositories
 {
-    
-        public class GenericRepository<T> : IGenericRepository<T> where T : class
+
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
         {
             private readonly KoiCareSystemDbContext _context;
             private readonly DbSet<T> _dbSet;

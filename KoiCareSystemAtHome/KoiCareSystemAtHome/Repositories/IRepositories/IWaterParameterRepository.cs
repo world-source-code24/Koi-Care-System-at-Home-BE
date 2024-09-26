@@ -1,7 +1,7 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 
-namespace KoiCareSystemAtHome.Repositories
+namespace KoiCareSystemAtHome.Repositories.IRepositories
 {
     public interface IWaterParameterRepository : IGenericRepository<WaterParametersTbl>
     {

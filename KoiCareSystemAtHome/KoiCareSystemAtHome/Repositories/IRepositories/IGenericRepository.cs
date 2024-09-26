@@ -1,4 +1,4 @@
-﻿namespace KoiCareSystemAtHome.Repositories
+﻿namespace KoiCareSystemAtHome.Repositories.IRepositories
 {
     public interface IGenericRepository<T> where T : class
     {
