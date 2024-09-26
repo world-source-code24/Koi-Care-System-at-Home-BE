@@ -23,6 +23,8 @@ builder.Services.AddControllersWithViews();
 
 //UserRepository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
 
 //Google
 builder.Services.AddAuthentication(options =>
