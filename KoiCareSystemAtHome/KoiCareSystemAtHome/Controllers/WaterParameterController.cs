@@ -25,7 +25,7 @@ namespace KoiCareSystemAtHome.Controllers
             var pond = await _pondRepository.GetByIdAsync(pondId);
             if (pond == null) return NotFound();
             var param = await _waterParamRepository.GetAllByPondIdAsync(pondId);
-            return Ok(param);
+            return Ok(new { success = true, Parameter = param });
         }
         [HttpGet("get-param{pondId}")]
         public async Task<IActionResult> GetParam(int pondId)
@@ -33,14 +33,14 @@ namespace KoiCareSystemAtHome.Controllers
             var pond = await _pondRepository.GetByIdAsync(pondId);
             if (pond == null) return NotFound();
             var param = await _waterParamRepository.GetByPondIdAsync(pondId);
-            return Ok(param);
+            return Ok(new { success = true, Parameter = param });
         }
 
         [HttpPost("save-param{pondId}")]
         public async Task<IActionResult> CreateParam(int pondId, WaterParameterDTO param)
         {
             var newParam = new WaterParametersTbl
-            { 
+            {
 
                 Temperature = param.Temperature,
 
@@ -93,7 +93,7 @@ namespace KoiCareSystemAtHome.Controllers
             updateParam.Date = DateTime.Now;
 
             updateParam.Note = param.Note;
-            return Ok(updateParam);
+            return Ok(new { success = true, Parameter = updateParam });
         }
 
         [HttpDelete("delete-param{paramId}")]
@@ -102,7 +102,19 @@ namespace KoiCareSystemAtHome.Controllers
             var updateParam = await _waterParamRepository.GetByIdAsync(paramId);
             if (updateParam == null) return BadRequest();
             await _waterParamRepository.DeleteAsync(paramId);
-            return Ok("Delete successfully!");
+            return Ok(new { success = true, Message = "Delete successfully!" });
+        }
+
+        [HttpPost("calculate")]
+        public IActionResult CalculateParameter([FromBody] WaterParameterDTO param)
+        {
+            if (param == null)
+            {
+                return BadRequest("Parameters cannot be null.");
+            }
+
+            var message = param.CalculateMessage();
+            return Ok(new { success = true, Message = message });
         }
     }
 }
