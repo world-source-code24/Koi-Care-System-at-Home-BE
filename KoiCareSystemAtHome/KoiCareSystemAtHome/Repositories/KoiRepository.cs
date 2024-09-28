@@ -9,12 +9,12 @@ namespace KoiCareSystemAtHome.Repositories
     public class KoiRepository : GenericRepository<KoisTbl>, IKoiRepository
     {
         private readonly KoiCareSystemDbContext _context;
-        public KoiRepository(KoiCareSystemDbContext context) : base(context) 
+        public KoiRepository(KoiCareSystemDbContext context) : base(context)
         {
             _context = context;
         }
 
-        public async Task<List<KoisTbl>> GetKoiByPondId(int pondId)
+        public async Task<List<KoisTbl>> GetKoiByPondIdAsync(int pondId)
         {
             var ListOfKoi = await _context.KoisTbls.Where(p => p.PondId == pondId)
                 .Select(p => new KoisTbl
@@ -32,7 +32,7 @@ namespace KoiCareSystemAtHome.Repositories
             return ListOfKoi;
         }
 
-        public async Task<KoisTbl> GetKoiByKoiId(int koiId)
+        public async Task<KoisTbl> GetKoiByKoiIdAsync(int koiId)
         {
             var koiDetails = await _context.KoisTbls
                 .Where(p => p.KoiId == koiId)
@@ -47,34 +47,34 @@ namespace KoiCareSystemAtHome.Repositories
                     Sex = p.Sex,
                     Breed = p.Breed,
                 }).FirstOrDefaultAsync();
+            if(koiDetails == null)
+            {
+                return null;
+            }
             return koiDetails;
         }
 
-        public async Task<List<KoisTbl>> GetKoiByUserIdAndPondId(int userId, int pondId)
+        public async Task<List<KoisTbl>> GetKoiByUserIdAsync(int userId)
         {
-            var ListOfPondIds = await _context.PondsTbls
-                .Where(p => p.UserId == userId)
-                .Select(p => p.PondId)
-                .ToListAsync();
-            
-                var ListOfKoi = await _context.KoisTbls
-                .Where(k => ListOfPondIds.Contains(pondId))
-                .Select(k => new KoisTbl
-                {
-                    KoiId = k.KoiId,
-                    Name = k.Name,
-                    Image = k.Image,
-                    Physique = k.Physique,
-                    Age = k.Age,
-                    Length = k.Length,
-                    Weight = k.Weight,
-                    Sex = k.Sex,
-                    Breed = k.Breed,
-                }).ToListAsync();
-                return ListOfKoi;
+            var ListOfKoi = await (from koi in _context.KoisTbls
+                                   join pond in _context.PondsTbls on koi.PondId equals pond.PondId
+                                   where pond.UserId == userId
+                                   select new KoisTbl
+                                   {
+                                       KoiId = koi.KoiId,
+                                       Name = koi.Name,
+                                       Image = koi.Image,
+                                       Physique = koi.Physique,
+                                       Age = koi.Age,
+                                       Length = koi.Length,
+                                       Weight = koi.Weight,
+                                       Sex = koi.Sex,
+                                       Breed = koi.Breed,
+                                   }).ToListAsync();
+            return ListOfKoi;
         }
 
-        public void SaveKoiToChart(int koiId)
+        public async Task SaveKoiToChartAsync(int koiId)
         {
         }
     }
