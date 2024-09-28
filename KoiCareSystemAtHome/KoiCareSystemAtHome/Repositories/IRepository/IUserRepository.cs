@@ -1,13 +1,13 @@
 ﻿using KoiCareSystemAtHome.Entities;
 
-namespace KoiCareSystemAtHome.Repositories
+namespace KoiCareSystemAtHome.Repositories.IRepository
 {
     public interface IUserRepository
     {
         Task<UserTbl> GetUserByEmailAsync(string email);
         string CreateRandomPassword();
 
-        Task<(UserTbl,bool)> RegisterUserByEmailAsync(string email);
+        Task<(UserTbl, bool)> RegisterUserByEmailAsync(string email);
         Task SaveUserAsync(UserTbl user);
     }
 }

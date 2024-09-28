@@ -1,12 +1,12 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
-using KoiCareSystemAtHome.Repositories;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using KoiCareSystemAtHome.Repositories.IRepository;
 
 namespace KoiCareSystemAtHome.Controllers
 {

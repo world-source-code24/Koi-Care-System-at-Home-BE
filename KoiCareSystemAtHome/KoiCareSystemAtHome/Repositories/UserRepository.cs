@@ -1,4 +1,5 @@
 ﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Repositories.IRepository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Net.Mail;
