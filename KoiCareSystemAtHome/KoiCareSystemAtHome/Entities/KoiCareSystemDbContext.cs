@@ -375,4 +375,6 @@ public partial class KoiCareSystemDbContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+
 }

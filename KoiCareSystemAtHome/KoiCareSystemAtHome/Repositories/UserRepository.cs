@@ -3,6 +3,8 @@ using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Net.Mail;
+using System.Security.Claims;
+using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KoiCareSystemAtHome.Repositories
@@ -49,7 +51,7 @@ namespace KoiCareSystemAtHome.Repositories
 
 
 
-    public async Task<(UserTbl, bool)> RegisterUserByEmailAsync(string email)
+        public async Task<(UserTbl, bool)> RegisterUserByEmailAsync(string email)
         {
             //Check path email
             try
@@ -76,11 +78,26 @@ namespace KoiCareSystemAtHome.Repositories
 
 
 
-    public async Task SaveUserAsync(UserTbl user)
+        public async Task SaveUserAsync(UserTbl user)
         {
             _context.UserTbls.Add(user);
             await _context.SaveChangesAsync();
         }
 
+        public int GetCurrentUserId(ClaimsPrincipal user)
+        {
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return userId;
+            }
+            throw new UnauthorizedAccessException("User is not authenticated or user ID is invalid.");
+        }
+
+        public Task<bool> CheckPhoneNumber(string phoneNumber)
+        {
+            bool isMatch = Regex.IsMatch(phoneNumber, @"^?\+?[0-9]{9,11}$");
+            return Task.FromResult(isMatch);
+        }
     }
 }

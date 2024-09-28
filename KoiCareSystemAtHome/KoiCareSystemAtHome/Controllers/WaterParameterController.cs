@@ -14,11 +14,13 @@ namespace KoiCareSystemAtHome.Controllers
     {
         private readonly IWaterParameterRepository _waterParamRepository;
         private readonly IGenericRepository<PondsTbl> _pondRepository;
+
         public WaterParameterController(IWaterParameterRepository waterParamRepository, IGenericRepository<PondsTbl> pondRepository)
         {
             _waterParamRepository = waterParamRepository;
             _pondRepository = pondRepository;
         }
+
         [HttpGet("get-all{pondId}")]
         public async Task<IActionResult> GetAllAsync(int pondId)
         {
@@ -27,6 +29,7 @@ namespace KoiCareSystemAtHome.Controllers
             var param = await _waterParamRepository.GetAllByPondIdAsync(pondId);
             return Ok(new { success = true, Parameter = param });
         }
+
         [HttpGet("get-param{pondId}")]
         public async Task<IActionResult> GetParam(int pondId)
         {

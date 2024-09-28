@@ -1,4 +1,5 @@
 ﻿using KoiCareSystemAtHome.Entities;
+using System.Security.Claims;
 
 namespace KoiCareSystemAtHome.Repositories.IRepositories
 {
@@ -9,5 +10,7 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
 
         Task<(UserTbl, bool)> RegisterUserByEmailAsync(string email);
         Task SaveUserAsync(UserTbl user);
+        Task<bool> CheckPhoneNumber(string phoneNumber);
+        int GetCurrentUserId(ClaimsPrincipal user);
     }
 }
