@@ -1,6 +1,6 @@
 using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Repositories;
-using KoiCareSystemAtHome.Repositories.IRepository;
+using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -24,6 +24,8 @@ builder.Services.AddControllersWithViews();
 
 //UserRepository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
 
 //Google
 builder.Services.AddAuthentication(options =>

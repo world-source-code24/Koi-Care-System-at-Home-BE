@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Security.Claims;
-using KoiCareSystemAtHome.Repositories.IRepository;
+using KoiCareSystemAtHome.Repositories.IRepositories;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -66,7 +66,13 @@ namespace KoiCareSystemAtHome.Controllers
                 return BadRequest("Invalid registration data.");
             }
 
-            var (user, isUserNew) = await _userRepository.RegisterUserByEmailAsync(registerDto.Email);
+            var (_, isUserNew) = await _userRepository.RegisterUserByEmailAsync(registerDto.Email);
+
+            //Check phone number
+            if (!await _userRepository.CheckPhoneNumber(registerDto.PhoneNumber))
+            {
+                throw new InvalidDataException("Invalid phone number");
+            }
 
             if (isUserNew)
             {

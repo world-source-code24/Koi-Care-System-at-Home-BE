@@ -1,6 +1,8 @@
-﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Entities;
+using System.Security.Claims;
 
-namespace KoiCareSystemAtHome.Repositories.IRepository
+namespace KoiCareSystemAtHome.Repositories.IRepositories
+
 {
     public interface IUserRepository
     {
@@ -9,5 +11,7 @@ namespace KoiCareSystemAtHome.Repositories.IRepository
 
         Task<(UserTbl, bool)> RegisterUserByEmailAsync(string email);
         Task SaveUserAsync(UserTbl user);
+        Task<bool> CheckPhoneNumber(string phoneNumber);
+        int GetCurrentUserId(ClaimsPrincipal user);
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using KoiCareSystemAtHome.Repositories.IRepository;
+using KoiCareSystemAtHome.Repositories.IRepositories;
 
 namespace KoiCareSystemAtHome.Controllers
 {
