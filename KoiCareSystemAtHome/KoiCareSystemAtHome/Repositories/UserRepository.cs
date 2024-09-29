@@ -1,4 +1,4 @@
-﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System;

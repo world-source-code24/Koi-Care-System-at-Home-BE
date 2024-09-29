@@ -1,7 +1,8 @@
-﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Entities;
 using System.Security.Claims;
 
 namespace KoiCareSystemAtHome.Repositories.IRepositories
+
 {
     public interface IUserRepository
     {
