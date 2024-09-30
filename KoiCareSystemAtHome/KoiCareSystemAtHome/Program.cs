@@ -22,10 +22,11 @@ builder.Services.AddDbContext<KoiCareSystemDbContext>(option => option.UseSqlSer
 
 builder.Services.AddControllersWithViews();
 
-//UserRepository
+//Service Repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
+builder.Services.AddScoped<IKoiRepository, KoiRepository>();
 
 //Google
 builder.Services.AddAuthentication(options =>

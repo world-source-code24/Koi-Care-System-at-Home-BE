@@ -89,7 +89,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return Unauthorized("Don't have user or incorrect password");
             }
-            return Ok(new {success=true, Message = "Login Successfully" });
+            return Ok(new {success=true, User = user,Message = "Login Successfully" });
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Repositories.IRepositories;
-using KoiCareSystemAtHome.Repositories.IRepository;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace KoiCareSystemAtHome.Repositories
 {

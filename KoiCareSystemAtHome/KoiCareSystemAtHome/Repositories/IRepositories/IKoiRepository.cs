@@ -1,8 +1,6 @@
 using KoiCareSystemAtHome.Entities;
-using KoiCareSystemAtHome.Models;
-using KoiCareSystemAtHome.Repositories.IRepositories;
 
-namespace KoiCareSystemAtHome.Repositories.IRepository
+namespace KoiCareSystemAtHome.Repositories.IRepositories
 {
     public interface IKoiRepository : IGenericRepository<KoisTbl>
     {

@@ -1,6 +1,6 @@
 using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
-using KoiCareSystemAtHome.Repositories.IRepository;
+using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -98,7 +98,7 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpDelete("[controller]/{koiId}")]
         public async Task<IActionResult> DeleteKoi(int koiId)
         {
-            var deleteKoi = await _context.FindAsync<KoiDTO>(koiId);
+            var deleteKoi = await _context.FindAsync<KoisTbl>(koiId);
             if(deleteKoi == null) return NotFound(new { message = "Can't find Koi to Delete" });
             await _koiRepository.DeleteAsync(koiId);
             return Ok(new { message = "Delete Successfully!" });
