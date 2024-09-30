@@ -29,7 +29,7 @@
                     $"Salt: {SaltHealthy()}",
                     $"pH: {PhLevelHealthy()}",
                     $"Oxygen: {O2Healthy()}",
-                    $"Nitrite: {No3Healthy()}",
+                    $"Nitrite: {No2Healthy()}",
                     $"Nitrate: {No3Healthy()}",
                     $"Phosphate: {Po4Healthy()}",
                     $"Chlorines: {TotalChlorinesHealthy()}"};
@@ -89,8 +89,8 @@
             string idealRange = " The ideal range is 20-40 mg/L";
             string message = "";
             if (No3Level < 0.0m) message = "The parameter should not be negative";
-            else if (No3Level > 40) message = "The oxygen should be lower." + idealRange;
-            else if (No3Level < 20) message = "The oxygen should be higher." + idealRange;
+            else if (No3Level > 40) message = "The nitrate should be lower." + idealRange;
+            else if (No3Level < 20) message = "The nitrate should be higher." + idealRange;
             return message;
         }
 
@@ -99,8 +99,8 @@
             string idealRange = " The ideal range is 0.5-2.0 mg/L";
             string message = "";
             if (No3Level < 0.0m) message = "The parameter should not be negative";
-            else if (No3Level > 2.0m) message = "The oxygen should be lower." + idealRange;
-            else if (No3Level < 0.5m) message = "The oxygen should be higher." + idealRange;
+            else if (No3Level > 2.0m) message = "The phosphate should be lower." + idealRange;
+            else if (No3Level < 0.5m) message = "The phosphate should be higher." + idealRange;
             return message;
         }
 
