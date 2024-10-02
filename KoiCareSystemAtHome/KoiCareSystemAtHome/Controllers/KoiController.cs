@@ -68,7 +68,12 @@ namespace KoiCareSystemAtHome.Controllers
                 Sex = koi.Sex,
                 PondId = pondId,
             };
+
             await _koiRepository.AddAsync(newKoi);
+            await _context.SaveChangesAsync();
+
+            koi.KoiId = newKoi.KoiId;
+            await _koiRepository.SaveKoiToChartAsync(newKoi);
             return Ok(newKoi);
         }
 
@@ -92,6 +97,9 @@ namespace KoiCareSystemAtHome.Controllers
             updateKoi.PondId = pondId;
 
             await _koiRepository.UpdateAsync(updateKoi);
+            await _context.SaveChangesAsync();
+
+            await _koiRepository.SaveKoiToChartAsync(updateKoi);
             return Ok(new { message = "Update Successfully!" });
         }
 

@@ -53,7 +53,7 @@ namespace KoiCareSystemAtHome.Controllers
             var user = await _userRepository.GetUserByEmailAsync(email);
 
             await SignInUser(user);
-            return Redirect("http://localhost:5173/");
+            return Redirect("http://localhost:5175/");
     }
 
         private async Task SignInUser(UserTbl user)

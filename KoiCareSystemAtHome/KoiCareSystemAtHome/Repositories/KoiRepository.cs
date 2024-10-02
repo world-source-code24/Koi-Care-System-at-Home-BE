@@ -1,4 +1,5 @@
 ﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -72,8 +73,18 @@ namespace KoiCareSystemAtHome.Repositories
             return ListOfKoi;
         }
 
-        public async Task SaveKoiToChartAsync(int koiId)
+        public async Task SaveKoiToChartAsync(KoisTbl kois)
         {
+            var chart = new KoiGrowthChartsTbl
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now),
+                Length = kois.Length,
+                Weight = kois.Weight,
+                HealthStatus = kois.Physique,
+                KoiId= kois.KoiId,
+            };
+            _context.KoiGrowthChartsTbls.Add(chart);
+            await _context.SaveChangesAsync();
         }
     }
 }

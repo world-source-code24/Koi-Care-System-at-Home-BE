@@ -1,4 +1,5 @@
 using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Models;
 
 namespace KoiCareSystemAtHome.Repositories.IRepositories
 {
@@ -12,6 +13,6 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         //Get All Koi by PondId
         Task<List<KoisTbl>> GetKoiByPondIdAsync(int pondId);
         //Save Koi to Chart
-        Task SaveKoiToChartAsync(int koiId);
+        Task SaveKoiToChartAsync(KoisTbl kois);
     }
 }

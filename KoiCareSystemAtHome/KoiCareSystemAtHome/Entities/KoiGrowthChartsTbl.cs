@@ -18,4 +18,5 @@ public partial class KoiGrowthChartsTbl
     public int KoiId { get; set; }
 
     public virtual KoisTbl Koi { get; set; } = null!;
+
 }
