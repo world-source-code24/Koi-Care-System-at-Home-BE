@@ -17,7 +17,9 @@ create table account_tbl(
 	image varchar(200),
 	phone varchar(15) not null default '',
 	address nvarchar(200) not null default '',
-	role varchar(15) not null default 'Guest',
+	role varchar(15) not null default 'Guest', /* Role: Admin, Staff, Guest, Member*/
+	startDate date not null,
+	endDate date,
 	status bit not null default 1
 )
 
@@ -25,13 +27,6 @@ create table notes_tbl(
 	noteId int identity primary key,
 	noteName nvarchar(50) default '',
 	noteText text not null,
-	accId int not null foreign key references account_tbl on delete cascade
-)
-
-create table memberships_tbl(
-	membershipId int identity primary key,
-	startDate date not null,
-	endDate date,
 	accId int not null foreign key references account_tbl on delete cascade
 )
 
@@ -56,12 +51,7 @@ create table water_parameters_tbl(
 	no2Level decimal(5,2),
 	no3Level decimal(5,2),
 	po4Level decimal(5,2),
-	nh4Level decimal(5,2),
-	khLevel decimal(5,2),
-	ghLevel decimal(5,2),
-	co2Level decimal(5,2),
 	totalChlorines decimal(5,2),
-	outDoorTemp decimal(5,2),
 	date datetime not null,
 	note text,
 	pondId int not null foreign key references ponds_tbl on delete cascade
@@ -99,6 +89,8 @@ create table shops_tbl(
 create table orders_tbl(
 	orderId int identity primary key,
 	date date not null,
+	statusOrder nvarchar(100),
+	statusPayment nvarchar(100),
 	totalAmount decimal(10,2),
 	accId int foreign key references account_tbl on delete set null
 )
@@ -122,6 +114,27 @@ create table order_details_tbl(
 	totalPrice decimal(10,2),
 	primary key(orderId, productId),
 	foreign key (orderId) references orders_tbl(orderId) on delete cascade,
+	foreign key (productId) references products_tbl(productId) on delete cascade
+)
+
+create table refresh_token(
+	tokenId nvarchar(100) primary key,
+	accId int,
+	token nvarchar(100),
+	jwtId nvarchar(100),
+	isUsed bit,
+	isRevoked bit,
+	issueAt datetime,
+	expiredAt datetime,
+	foreign key (accId) references account_tbl(accId) on delete cascade
+)
+
+create table cart_tbl(
+	accId int not null,
+	productId int not null,
+	quantity int not null default 1,
+	primary key (accId, productId),
+	foreign key (accId) references account_tbl(accId) on delete cascade,
 	foreign key (productId) references products_tbl(productId) on delete cascade
 )
 go
@@ -149,11 +162,3 @@ INSERT INTO products_tbl (name, price, stock, category, productInfo, status, sho
 ('Ammonia Test Kit', 100.00, 90, 'Water Parameters', 'Test kit for monitoring ammonia levels in pond water.', 1, 3),
 ('Koi Pond Clarifier', 160.00, 45, 'Treatments', 'Clarifier to remove suspended particles and improve water clarity.', 1, 4),
 ('Water Hardness Test Kit', 110.00, 80, 'Water Parameters', 'Test kit for measuring water hardness levels.', 1, 5);
-
-
-select * from products_tbl
-select * from shops_tbl
-select * from account_tbl
-select * from ponds_tbl
-select * from kois_tbl
-select * from koi_growth_charts_tbl
