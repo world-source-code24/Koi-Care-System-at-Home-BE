@@ -23,7 +23,6 @@ builder.Services.AddDbContext<KoiCareSystemDbContext>(option => option.UseSqlSer
 builder.Services.AddControllersWithViews();
 
 //UserRepository
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
