@@ -29,6 +29,7 @@ builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>(
 builder.Services.AddScoped<IKoiRepository, KoiRepository>();
 builder.Services.AddScoped<IKoiChartRepository, KoiChartRepository>();
 
+
 //Ignore Loop
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

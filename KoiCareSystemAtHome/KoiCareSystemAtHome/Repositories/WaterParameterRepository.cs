@@ -19,7 +19,7 @@ namespace KoiCareSystemAtHome.Repositories
             var results = await _context.WaterParametersTbls.Where(p => p.PondId == pondId)
                 .Select(p => new WaterParametersTbl
                 {
-             
+
                     ParameterId = p.ParameterId,
 
                     Temperature = p.Temperature,

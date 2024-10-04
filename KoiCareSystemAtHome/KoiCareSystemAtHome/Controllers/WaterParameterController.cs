@@ -75,9 +75,8 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> UpdateParam(int pamamId, WaterParameterDTO param)
         {
             var updateParam = await _waterParamRepository.GetByIdAsync(pamamId);
-            if (updateParam == null) return BadRequest();
+            if (updateParam == null) return NotFound();
             updateParam.Temperature = param.Temperature;
-
 
             updateParam.Salt = param.Salt;
 
@@ -96,6 +95,7 @@ namespace KoiCareSystemAtHome.Controllers
             updateParam.Date = DateTime.Now;
 
             updateParam.Note = param.Note;
+            await _waterParamRepository.UpdateAsync(updateParam);
             return Ok(new { success = true, Parameter = updateParam });
         }
 
@@ -103,7 +103,7 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> DeleteParam(int paramId)
         {
             var updateParam = await _waterParamRepository.GetByIdAsync(paramId);
-            if (updateParam == null) return BadRequest();
+            if (updateParam == null) return NotFound();
             await _waterParamRepository.DeleteAsync(paramId);
             return Ok(new { success = true, Message = "Delete successfully!" });
         }
