@@ -25,7 +25,7 @@ namespace KoiCareSystemAtHome.Repositories
                     ProductInfo = p.ProductInfo,
                     Status = p.Status,
                     ShopId = p.ShopId
-    }).ToListAsync();
+                }).ToListAsync();
             return results;
         }
 

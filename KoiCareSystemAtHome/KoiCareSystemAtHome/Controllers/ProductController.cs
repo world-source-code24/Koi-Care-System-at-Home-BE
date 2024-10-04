@@ -13,7 +13,7 @@ namespace KoiCareSystemAtHome.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-        public ProductController (IProductRepository productRepository)
+        public ProductController(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
@@ -29,7 +29,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return BadRequest(ex.Message);
             }
-          
+
         }
 
         [HttpGet("get-all-shopId{shopId}")]
