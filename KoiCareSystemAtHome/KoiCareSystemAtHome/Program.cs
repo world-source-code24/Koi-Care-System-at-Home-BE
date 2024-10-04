@@ -21,11 +21,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<KoiCareSystemDbContext>(option => option.UseSqlServer
-(builder.Configuration.GetConnectionString("KoiCareSystem")));
+//Database Services
+builder.Services.AddDbContext<KoiCareSystemDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareSystem")));
 
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddControllersWithViews();
+
 
 //Service Repository
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -80,11 +82,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAllOrigins");
 
-app.UseAuthentication();
-
-app.UseAuthorization();
-
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

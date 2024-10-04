@@ -11,7 +11,7 @@ public partial class MembershipsTbl
 
     public DateOnly? EndDate { get; set; }
 
-    public int UserId { get; set; }
+    public int AccId { get; set; }
 
-    public virtual UserTbl User { get; set; } = null!;
+    public virtual AccountTbl Acc { get; set; } = null!;
 }
