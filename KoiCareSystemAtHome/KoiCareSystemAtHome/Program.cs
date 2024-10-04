@@ -1,5 +1,6 @@
 using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Repositories;
+using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,13 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareSystem"))
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddControllersWithViews();
 
+
+//Service Repository
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
+builder.Services.AddScoped<IKoiRepository, KoiRepository>();
+builder.Services.AddScoped<IKoiChartRepository, KoiChartRepository>();
+
 //Ignore Loop
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -33,6 +42,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
     });
+
 //CORs policy
 builder.Services.AddCors(options =>
 {
