@@ -24,7 +24,7 @@ namespace KoiCareSystemAtHome.Repositories
                 Volume = pondDto.Volume,
                 DrainCount = pondDto.DrainCount,
                 PumpCapacity = pondDto.PumpCapacity,
-                UserId = pondDto.UserId
+                AccId = pondDto.UserId,
             };
             return await Task.FromResult(pondTbl); 
         }
@@ -40,7 +40,7 @@ namespace KoiCareSystemAtHome.Repositories
             pondTbl.Volume,
             pondTbl.DrainCount,
             pondTbl.PumpCapacity,
-            pondTbl.UserId
+            pondTbl.AccId
             );
             return await Task.FromResult(pondDTO);
         }

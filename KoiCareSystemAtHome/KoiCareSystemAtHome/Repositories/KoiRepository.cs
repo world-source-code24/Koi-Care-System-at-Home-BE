@@ -53,11 +53,11 @@ namespace KoiCareSystemAtHome.Repositories
             return koiDetails;
         }
 
-        public async Task<List<KoisTbl>> GetKoiByUserIdAsync(int userId)
+        public async Task<List<KoisTbl>> GetKoiByUserIdAsync(int accId)
         {
             var ListOfKoi = await (from koi in _context.KoisTbls
                                    join pond in _context.PondsTbls on koi.PondId equals pond.PondId
-                                   where pond.UserId == userId
+                                   where pond.AccId == accId
                                    select new KoisTbl
                                    {
                                        KoiId = koi.KoiId,
