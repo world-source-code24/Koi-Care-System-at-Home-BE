@@ -23,6 +23,8 @@ public partial class ProductsTbl
 
     public int? ShopId { get; set; }
 
+    public virtual ICollection<CartTbl> CartTbls { get; set; } = new List<CartTbl>();
+
     public virtual ICollection<OrderDetailsTbl> OrderDetailsTbls { get; set; } = new List<OrderDetailsTbl>();
 
     public virtual ShopsTbl? Shop { get; set; }
