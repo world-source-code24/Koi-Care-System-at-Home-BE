@@ -21,17 +21,7 @@ public partial class WaterParametersTbl
 
     public decimal? Po4Level { get; set; }
 
-    public decimal? Nh4Level { get; set; }
-
-    public decimal? KhLevel { get; set; }
-
-    public decimal? GhLevel { get; set; }
-
-    public decimal? Co2Level { get; set; }
-
     public decimal? TotalChlorines { get; set; }
-
-    public decimal? OutDoorTemp { get; set; }
 
     public DateTime Date { get; set; }
 

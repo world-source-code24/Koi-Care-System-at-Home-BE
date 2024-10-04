@@ -11,7 +11,7 @@ public partial class NotesTbl
 
     public string NoteText { get; set; } = null!;
 
-    public int UserId { get; set; }
+    public int AccId { get; set; }
 
-    public virtual UserTbl User { get; set; } = null!;
+    public virtual AccountTbl Acc { get; set; } = null!;
 }
