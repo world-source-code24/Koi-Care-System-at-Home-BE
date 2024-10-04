@@ -28,21 +28,5 @@ namespace KoiCareSystemAtHome.Repositories
                                   }).ToListAsync();
             return koiChart;
         }
-
-        //public async Task UpdateKoiGrowthCharts(int koiId, KoiDTO koiDTO)
-        //{
-        //    DateOnly nowDay = DateOnly.FromDateTime(DateTime.Now);
-        //    var koiChart = await _context.KoiGrowthChartsTbls
-        //        .Where(p => p.KoiId == koiId && p.Date == nowDay)
-        //        .Select(p => p.Date).SingleOrDefaultAsync();
-        //    if(koiChart != nowDay)
-        //    {
-                
-        //    }
-        //    else
-        //    {
-
-        //    }
-        //}
     }
 }
