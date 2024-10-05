@@ -1,13 +1,8 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
-using KoiCareSystemAtHome.Repositories;
+using KoiCareSystemAtHome.Repositories.IRepositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.Mail;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -16,163 +11,49 @@ namespace KoiCareSystemAtHome.Controllers
     public class AccountController : ControllerBase
     {
         private readonly KoiCareSystemDbContext _context;
-        private readonly TokenProvider _tokenProvider;
-        private readonly IConfiguration _configuration;
-        public AccountController(KoiCareSystemDbContext context, TokenProvider tokenProvider, IConfiguration configuration)
+        private readonly IAccountRepository _accountRepository;
+
+        public AccountController(KoiCareSystemDbContext context, IAccountRepository accountRepository)
         {
             _context = context;
-            _tokenProvider = tokenProvider;
-            _configuration = configuration;
+            _accountRepository = accountRepository;
         }
 
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginModels login)
+        //Profile cua User dang su dung
+        [HttpGet("Profile")]
+        public async Task<IActionResult> GetProfile()
         {
-            var acc = _context.AccountTbls.SingleOrDefault(p => p.Email == login.Email && p.Password == login.Password);
-            if (acc == null)
+            //Get Id of Account in Token
+            var idClaim = User.FindFirst("Id")?.Value;
+            //try to tranfer idClaim to int account
+            if (idClaim == null || !int.TryParse(idClaim, out int accId))
             {
-                return BadRequest(new { Success = false, Message = "Email or Password is not correct!" });
+                return BadRequest("User ID not found or invalid.");
             }
-            //Tao Token
-            TokenModel token = await _tokenProvider.GenerateToken(acc);
-
-            //Neu khong co loi sai thi thuc hien tra ve Token
-            return Ok(new
+            AccountDTO profile = await _accountRepository.GetAccountProfile(accId);
+            if (profile == null)
             {
-                Success = true,
-                Message = "Login Successfully",
-                Data = token
-            });
+                return NotFound(new { message = "Don't have any information of this account!" });
+            }
+            return Ok(profile);
         }
 
-        [HttpPost("RefreshToken")]
-        public async Task<IActionResult> RefreshToken(TokenModel token)
+        [HttpPut("Profile")]
+        public async Task<IActionResult> UpdateProfile(AccountDTO newUpdate)
         {
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-
-            var secretKey = _configuration["AppSettings:SecretKey"];
-            var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
-
-            var tokenValidationParameters = new TokenValidationParameters
+            //Get Id of Account in Token
+            var accIdClaim = User.FindFirst("Id")?.Value;
+            //try to tranfer accIdClaim to int account
+            if (accIdClaim == null || !int.TryParse(accIdClaim, out int accId))
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
-
-                ClockSkew = TimeSpan.Zero,
-
-                ValidateLifetime = false, //Khong kiem tra han su dung cua Token
-            };
-            try
-            {
-                //Checking Token is Valid?
-                var tokenInVerification = jwtTokenHandler.ValidateToken(token.AccessToken, tokenValidationParameters,
-                    out var validatedToken);
-                //Checking Token Algorithms
-                if (validatedToken is JwtSecurityToken jwtSecurityToken)
-                {
-                    var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
-                    if (!result) // In case, result = false
-                    {
-                        return BadRequest(new { Success = false, Message = "Invalid Token!" });
-                    }
-                }
-                //Checking Expired Token?
-                var utcExpireDate = long.Parse(tokenInVerification.Claims
-                    .FirstOrDefault(time => time.Type == JwtRegisteredClaimNames.Exp).Value);
-
-                var expireDate = ConvertUnixTimeToDateTime(utcExpireDate);
-                if (expireDate <= DateTime.UtcNow)
-                {
-                    return BadRequest(new { Success = false, Message = "Token is Expired!" });
-                }
-                //Checking Token Refresh in Database is Exist?
-                var storedToken = _context.RefreshTokens
-                    .FirstOrDefault(db => db.Token == token.RefreshToken);
-                if (storedToken == null)
-                {
-                    return BadRequest(new { Success = false, Message = "Token Refresh is not Exist!" });
-                }
-                //Checking Token is Used? / Revoked?
-                if (storedToken.IsUsed == true)
-                {
-                    return BadRequest(new { Success = false, Message = "Token Refresh has been used!" });
-                }
-                if (storedToken.IsRevoked == true)
-                {
-                    return BadRequest(new { Success = false, Message = "Token Refresh has been revoked!" });
-                }
-                //Checking Id == JwtId? in Refresh Token Db
-                var jwtId = tokenInVerification.Claims.FirstOrDefault(token => token.Type == JwtRegisteredClaimNames.Jti).Value;
-                if (storedToken.JwtId != jwtId)
-                {
-                    return BadRequest(new { Success = false, Message = "Token is not match" });
-                }
-                //Update Token is used
-                storedToken.IsUsed = true;
-                storedToken.IsRevoked = true;
-                await _context.SaveChangesAsync();
-                //Create new Token
-                var acc = await _context.AccountTbls.SingleOrDefaultAsync(acc => acc.AccId == storedToken.AccId);
-                TokenModel newToken = await _tokenProvider.GenerateToken(acc);
-
-                return Ok(new { Success = true, Message = "Refresh Token is Success", Data = newToken });
+                return BadRequest("User ID not found or invalid.");
             }
-            catch (Exception ex)
+            bool updateSuccess = await _accountRepository.UpdateProfile(accId, newUpdate);
+            if (!updateSuccess)
             {
-                return BadRequest(ex);
+                return BadRequest(new { success = false, message = "Cannot update Profile" });
             }
-        }
-
-        private DateTime ConvertUnixTimeToDateTime(long utcExpireDate)
-        {
-            var dateTimeInterval = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            return dateTimeInterval.AddSeconds(utcExpireDate).ToUniversalTime();
-        }
-
-        [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync(string name, string phone, string email, string password, string confirmedPassword)
-        {
-            if (password != confirmedPassword)
-            {
-                return BadRequest(new { Susccess = false, Message = "Confirmed password is not correct!" });
-            }
-
-            //Check gmail
-            bool check = false;
-            try
-            {
-                var checkMail = new MailAddress(email);
-                check = true;
-            }
-            catch
-            {
-                check = false;
-            }
-            if (!check)
-            {
-                {
-                    return BadRequest(new { Susccess = false, Message = "Please enter a valid email address" });
-                }
-            }
-            //Check sdt
-            string phonePattern = @"^\+?[0-9]\d{9,11}$";
-            if ( !Regex.IsMatch(phone, phonePattern ))
-            {
-                return BadRequest(new { Susccess = false, Message = "Please enter a valid phone number" });
-            }
-            var newAccount = new AccountTbl
-            {
-                Name = name,
-                Phone = phone,
-                Email = email,
-                Password = password
-            };
-            await _context.AccountTbls.AddAsync(newAccount);
-            await _context.SaveChangesAsync();
-            return Ok(new { message = "Register Successfull" });
+            return Ok(new { success = true, message = "Update profile is successful!" });
         }
     }
 }
