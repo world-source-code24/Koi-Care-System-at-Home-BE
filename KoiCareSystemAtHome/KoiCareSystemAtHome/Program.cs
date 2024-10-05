@@ -28,7 +28,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
 builder.Services.AddScoped<IKoiRepository, KoiRepository>();
 builder.Services.AddScoped<IKoiChartRepository, KoiChartRepository>();
-
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 //Ignore Loop
 builder.Services.AddControllers()

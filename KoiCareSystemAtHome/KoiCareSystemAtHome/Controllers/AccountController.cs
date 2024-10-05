@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -136,6 +138,30 @@ namespace KoiCareSystemAtHome.Controllers
             if (password != confirmedPassword)
             {
                 return BadRequest(new { Susccess = false, Message = "Confirmed password is not correct!" });
+            }
+
+            //Check gmail
+            bool check = false;
+            try
+            {
+                var checkMail = new MailAddress(email);
+                check = true;
+            }
+            catch
+            {
+                check = false;
+            }
+            if (!check)
+            {
+                {
+                    return BadRequest(new { Susccess = false, Message = "Please enter a valid email address" });
+                }
+            }
+            //Check sdt
+            string phonePattern = @"^\+?[0-9]\d{9,11}$";
+            if ( !Regex.IsMatch(phone, phonePattern ))
+            {
+                return BadRequest(new { Susccess = false, Message = "Please enter a valid phone number" });
             }
             var newAccount = new AccountTbl
             {
