@@ -19,7 +19,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<KoiCareSystemDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareSystem")));
 
+//Service Token
 builder.Services.AddScoped<TokenProvider>();
+
 builder.Services.AddControllersWithViews();
 
 
@@ -28,6 +30,8 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
 builder.Services.AddScoped<IKoiRepository, KoiRepository>();
 builder.Services.AddScoped<IKoiChartRepository, KoiChartRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 
 //Ignore Loop
