@@ -17,10 +17,10 @@ namespace KoiCareSystemAtHome.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetChartAsync(int koiID)
+        [HttpGet("{koiId}")]
+        public async Task<IActionResult> GetChartAsync(int koiId)
         {
-            var chart = await _koiChartRepository.GetKoiGrowthCharts(koiID);
+            var chart = await _koiChartRepository.GetKoiGrowthCharts(koiId);
             if (chart == null)
             {
                 return NotFound(new {message = "Don't have any Koi paramester"});
