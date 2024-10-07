@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using System.Linq;
 
-//namespace KoiCareSystemAtHome.Controllers
-//{
-//    [ApiController]
-//    [Route("api/[controller]")]
-//    public class PondController : ControllerBase
-//    {
-//        private readonly KoiCareSystemDbContext _context;
-//        private readonly IUserRepository _user;
-//        public PondController(KoiCareSystemDbContext context, IUserRepository user )
-//        {
-//            _context = context;
-//            _user = user;
-//        }
+namespace KoiCareSystemAtHome.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PondController : ControllerBase
+    {
+        private readonly KoiCareSystemDbContext _context;
+        //private readonly IUserRepository _user;
+        //public PondController(KoiCareSystemDbContext context, IUserRepository user)
+        //{
+        //    _context = context;
+        //    _user = user;
+        //}
 
         public PondController(KoiCareSystemDbContext context)
         {
