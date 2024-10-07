@@ -75,6 +75,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "KoiCareSystemAtHome");
+    options.RoutePrefix = String.Empty;
+});
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
