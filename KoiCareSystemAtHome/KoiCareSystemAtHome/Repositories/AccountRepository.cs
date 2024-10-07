@@ -6,7 +6,7 @@ using Microsoft.Identity.Client;
 
 namespace KoiCareSystemAtHome.Repositories
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : GenericRepository<AccountTbl>, IAccountRepository
     {
         //private readonly IAccountRepository _accountRepository;
         private readonly KoiCareSystemDbContext _context;
@@ -16,7 +16,7 @@ namespace KoiCareSystemAtHome.Repositories
         //    _accountRepository = accountRepository;
         //    _context = context;
         //}
-        public AccountRepository(KoiCareSystemDbContext context)
+        public AccountRepository(KoiCareSystemDbContext context) : base(context) 
         {
             _context = context;
         }
@@ -40,6 +40,16 @@ namespace KoiCareSystemAtHome.Repositories
                 Role = account.Role,
             };
             return accountDto;
+        }
+
+        public async Task<List<AccountTbl>> GetAllAccounts()
+        {
+            return await _context.AccountTbls.Where(a => !a.Role.Equals("admin")).ToListAsync();
+        }
+
+        public async Task<List<AccountTbl>> GetAllAccountsByRole(string role)
+        {
+            return await _context.AccountTbls.Where(a => a.Role.Equals("admin")).ToListAsync();
         }
 
         public async Task<bool> UpdateProfile(int id, AccountDTO updateInformation)
