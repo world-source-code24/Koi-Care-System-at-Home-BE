@@ -24,9 +24,9 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> GetProfile()
         {
             //Get Id of Account in Token
-            var idClaim = User.FindFirst("Id")?.Value;
+            var accIdClaim = User.FindFirst("Id")?.Value;
             //try to tranfer idClaim to int account
-            if (idClaim == null || !int.TryParse(idClaim, out int accId))
+            if (accIdClaim == null || !int.TryParse(accIdClaim, out int accId))
             {
                 return BadRequest("User ID not found or invalid.");
             }
@@ -55,5 +55,8 @@ namespace KoiCareSystemAtHome.Controllers
             }
             return Ok(new { success = true, message = "Update profile is successful!" });
         }
+
+        //Phan ma cac Admin se su dung
+        //Admin se get toan bo user trong he thong tru user da bi xoa
     }
 }

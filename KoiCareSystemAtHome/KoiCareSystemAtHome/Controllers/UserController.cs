@@ -1,4 +1,5 @@
-﻿using KoiCareSystemAtHome.Entities;
+﻿using Azure.Messaging;
+using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +27,22 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginModels login)
         {
-            var acc = _context.AccountTbls.SingleOrDefault(p => p.Email == login.Email && p.Password == login.Password);
+            if (login == null)
+            {
+                return BadRequest(new { Success = false, Message = "Email and Password can not blank!" });
+            }
+            var acc = _context.AccountTbls.SingleOrDefault(acc => acc.Email == login.Email && acc.Status);
             if (acc == null)
             {
-                return BadRequest(new { Success = false, Message = "Email or Password is not correct!" });
+                return BadRequest(new { Success = false, Message = "Your account not exist!" });
+            }
+            if (acc.Email != login.Email)
+            {
+                return BadRequest(new { Success = false, Message = "Wrong Email!" });
+            }
+            if (acc.Password != login.Password)
+            {
+                return BadRequest(new { Success = false, Message = "Wrong Password!" });
             }
             //Tao Token
             TokenModel token = await _tokenProvider.GenerateToken(acc);
@@ -133,6 +146,15 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync(string name, string phone, string email, string password, string confirmedPassword)
         {
+            var account = _context.AccountTbls.SingleOrDefault(acc => acc.Email == email && acc.Status);
+            if (account != null)
+            {
+                return BadRequest(new { Susccess = false, Message = "Account was existed!" });
+            }
+            if (_context.AccountTbls.SingleOrDefault(acc => acc.Phone == phone) != null)
+            {
+                return BadRequest(new { Susccess = false, Message = "Phone was existed!" });
+            }
             if (password != confirmedPassword)
             {
                 return BadRequest(new { Susccess = false, Message = "Confirmed password is not correct!" });
