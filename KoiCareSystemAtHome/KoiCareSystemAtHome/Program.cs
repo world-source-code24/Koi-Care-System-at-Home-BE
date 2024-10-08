@@ -35,6 +35,8 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICartDetailsRepository, CartDetailsRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<INormalFunctionsRepository, NormalFunctions>();
+builder.Services.AddSingleton<AllEnum>();
+
 
 //Ignore Loop
 builder.Services.AddControllers()

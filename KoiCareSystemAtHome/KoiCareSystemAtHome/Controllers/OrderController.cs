@@ -3,6 +3,7 @@ using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -51,7 +52,7 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { status = true, message = "Add order" });
         }
 
-        [HttpPut("Create-Order-And-Calculate-Money")]
+        [HttpPost("Create-Order-And-Calculate-Money")]
         public async Task<IActionResult> CreateOrderAndMoney(int accID)
         {
             try
@@ -74,6 +75,31 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return BadRequest(n);
             }
+        }
+
+        [HttpPut("Update-Status-Payment")]
+        public async Task<IActionResult> UpdatePaidSuccess (int accID, int orderID)
+        {
+            var order = await _context.OrdersTbls
+                .Where(order => order.AccId == accID && order.OrderId == orderID)
+                .FirstOrDefaultAsync();
+            if (order == null) return NotFound("Not found this order");
+            order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
+            await _context.SaveChangesAsync();
+            return Ok(new { status = true, message = "Payment status updated to Paid." });
+        }
+
+        [HttpPut("Update-Status-Payment-Latest")]
+        public async Task<IActionResult> UpdatePaidSuccessLatest(int accID, int orderID)
+        {
+            var order = await _context.OrdersTbls
+                .Where(order => order.AccId == accID)
+                .OrderByDescending(order => orderID)
+                .FirstOrDefaultAsync();
+            if (order == null) return NotFound("Not found this order");
+            order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
+            await _context.SaveChangesAsync();
+            return Ok(new { status = true, message = "Payment status updated to Paid." });
         }
     }
 }
