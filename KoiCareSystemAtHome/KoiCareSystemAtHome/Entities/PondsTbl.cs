@@ -19,11 +19,11 @@ public partial class PondsTbl
 
     public int? PumpCapacity { get; set; }
 
-    public int UserId { get; set; }
+    public int AccId { get; set; }
+
+    public virtual AccountTbl Acc { get; set; } = null!;
 
     public virtual ICollection<KoisTbl> KoisTbls { get; set; } = new List<KoisTbl>();
-
-    public virtual UserTbl User { get; set; } = null!;
 
     public virtual ICollection<WaterParametersTbl> WaterParametersTbls { get; set; } = new List<WaterParametersTbl>();
 }
