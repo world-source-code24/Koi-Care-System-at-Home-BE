@@ -42,6 +42,7 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(koiList);
         }
 
+        //Get Detail of Kois
         [HttpGet("[controller]/{koiId}")]
         public async Task<IActionResult> GetKoiDetails(int koiId)
         {

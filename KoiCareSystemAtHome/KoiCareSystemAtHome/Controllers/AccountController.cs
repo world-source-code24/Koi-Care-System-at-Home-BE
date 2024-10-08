@@ -24,9 +24,9 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> GetProfile()
         {
             //Get Id of Account in Token
-            var idClaim = User.FindFirst("Id")?.Value;
+            var accIdClaim = User.FindFirst("Id")?.Value;
             //try to tranfer idClaim to int account
-            if (idClaim == null || !int.TryParse(idClaim, out int accId))
+            if (accIdClaim == null || !int.TryParse(accIdClaim, out int accId))
             {
                 return BadRequest("User ID not found or invalid.");
             }

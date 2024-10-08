@@ -52,6 +52,7 @@ namespace KoiCareSystemAtHome.Repositories
             return await _context.AccountTbls.Where(a => a.Role.Equals("admin")).ToListAsync();
         }
 
+
         public async Task<bool> UpdateProfile(int id, AccountDTO updateInformation)
         {
             var account = _context.AccountTbls.FirstOrDefault(acc => acc.AccId == id);
