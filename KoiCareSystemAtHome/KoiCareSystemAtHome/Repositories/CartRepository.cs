@@ -1,5 +1,7 @@
 ﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -34,5 +36,38 @@ namespace KoiCareSystemAtHome.Repositories
             // Process order if stock is sufficient
             return (true, "Stock is sufficient, processing order.");
         }
+
+        public async Task<List<CartDTO>> GetUserCarts(int userID)
+        {
+            var userExists = await _context.AccountTbls.AnyAsync(acc => acc.AccId == userID);
+            if (!userExists) return null;
+
+            return await _context.CartTbls
+                .Where(cart => cart.AccId == userID)
+                .Select(cart => new CartDTO
+                {
+                    AccId = userID,
+                    ProductId = cart.ProductId,
+                    Quantity = cart.Quantity
+                }).ToListAsync();
+        }
+
+        //public async Task<List<CartDTO>> ShowAllUserCarts(int userID)
+        //{
+        //    bool checkUserExist = await _context.AccountTbls.AnyAsync(acc => acc.AccId == userID);
+        //    if (!checkUserExist)
+        //    {
+        //        return null;
+        //    }
+        //    return await _context.CartTbls
+        //        .Where(cart => cart.AccId == userID)
+        //        .Select(cart => new CartDTO
+        //        {
+        //            AccId = userID,
+        //            ProductId = cart.ProductId,
+        //            Quantity = cart.Quantity
+        //        })
+        //        .ToListAsync();
+        //}
     }
 }
