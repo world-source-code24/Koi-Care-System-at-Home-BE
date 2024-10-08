@@ -2,16 +2,25 @@
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace KoiCareSystemAtHome.Repositories
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : GenericRepository<AccountTbl>, IAccountRepository
     {
+        //private readonly IAccountRepository _accountRepository;
         private readonly KoiCareSystemDbContext _context;
-        public AccountRepository(KoiCareSystemDbContext context)
+
+        //public AccountRepository(AccountRepository accountRepository, KoiCareSystemDbContext context)
+        //{
+        //    _accountRepository = accountRepository;
+        //    _context = context;
+        //}
+        public AccountRepository(KoiCareSystemDbContext context) : base(context) 
         {
             _context = context;
         }
+
         public async Task<AccountDTO> GetAccountProfile(int id)
         {
             //Get information of Account in Db
@@ -32,6 +41,17 @@ namespace KoiCareSystemAtHome.Repositories
             };
             return accountDto;
         }
+
+        public async Task<List<AccountTbl>> GetAllAccounts()
+        {
+            return await _context.AccountTbls.Where(a => !a.Role.Equals("admin")).ToListAsync();
+        }
+
+        public async Task<List<AccountTbl>> GetAllAccountsByRole(string role)
+        {
+            return await _context.AccountTbls.Where(a => a.Role.Equals("admin")).ToListAsync();
+        }
+
 
         public async Task<bool> UpdateProfile(int id, AccountDTO updateInformation)
         {
