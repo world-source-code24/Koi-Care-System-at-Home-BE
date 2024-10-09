@@ -1,23 +1,34 @@
-﻿//using Azure.Core;
-//using KoiCareSystemAtHome.Models;
-//using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using KoiCareSystemAtHome.Models;
+using KoiCareSystemAtHome.Repositories;
+using KoiCareSystemAtHome.Repositories.IRepositories;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace KoiCareSystemAtHome.Controllers
-//{
-//    public class VnPayController
-//    {
-//        public IActionResult CreatePaymentUrl(PaymentInformationModel model)
-//        {
-//            var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
+namespace KoiCareSystemAtHome.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class VnPayController : ControllerBase
+    {
+        private readonly IVnPayService _vnPayService;
 
-//            return Redirect(url);
-//        }
+        public VnPayController(IVnPayService vnPayService)
+        {
+            _vnPayService = vnPayService;
+        }
 
-//        public IActionResult PaymentCallback()
-//        {
-//            var response = _vnPayService.PaymentExecute(Request.Query);
+        [HttpPost("CreatePayment")]
+        public IActionResult CreatePayment(PaymentInformationModel model)
+        {
+            var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
+            return Redirect(url);
+        }
 
-//            return Json(response);
-//        }
-//    }
-//}
+        [HttpGet("PaymentCallback")]
+        public IActionResult PaymentCallback()
+        {
+            var response = _vnPayService.PaymentExecute(Request.Query);
+            return Ok(response);
+        }
+    }
+}
