@@ -56,7 +56,97 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { success = true, message = "Update profile is successful!" });
         }
 
-        //Phan ma cac Admin se su dung
-        //Admin se get toan bo user trong he thong tru user da bi xoa
+        //Get all account except admin
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllAccounts()
+        {
+            var accs = await _accountRepository.GetAllAccounts();
+            return Ok(new {success = true, accs = accs});
+        }
+
+        //Get all by role
+        [HttpGet("get-all-by{role}")]
+        public async Task<IActionResult> GetAllByRole(string role)
+        {
+            try
+            {
+
+
+                if (role == null)
+                {
+                    return BadRequest("Role should by provided!!");
+                }
+                var accs = await _accountRepository.GetAllAccountsByRole(role);
+                return Ok(new { success = true, accs = accs });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Edit status 
+        //Delete account means setting status to false
+        [HttpPut("edit-status{accId}")]
+        public async Task<IActionResult> EditStatus(int accId, bool status)
+        {
+            try
+            {
+                var acc = await _accountRepository.GetByIdAsync(accId);
+                if (acc == null)
+                {
+                    return NotFound("No account available!!");
+                }
+                acc.Status = status;
+                await _accountRepository.UpdateAsync(acc);
+                return Ok(new {success = true, message = "The status is set to " + status});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Access membership
+        [HttpPut("membership{accId}")]
+        public async Task<IActionResult> MembershipAccess(int accId)
+        {
+            try
+            {
+                var acc = await _accountRepository.GetByIdAsync(accId);
+                if (acc == null)
+                {
+                    return NotFound("No account available!!");
+                }
+                acc.Role = "member";
+                acc.StartDate = DateOnly.FromDateTime(DateTime.Now);
+                await _accountRepository.UpdateAsync(acc);
+                return Ok(new { success = true, message = "Update successfully!!"});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        //Changing password
+        [HttpPut("change-password{accId}")]
+        public async Task<IActionResult> ChangePassword(int accId, string password)
+        {
+            try
+            {
+                var acc = await _accountRepository.GetByIdAsync(accId);
+                if (acc == null)
+                {
+                    return NotFound("No account available!!");
+                }
+                acc.Password = password;
+                await _accountRepository.UpdateAsync(acc);
+                return Ok(new { success = true, message = "Changing successfully!!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

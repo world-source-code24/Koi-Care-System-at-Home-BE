@@ -34,7 +34,11 @@ builder.Services.AddScoped<IPondRepository, PondRepository>();
 builder.Services.AddScoped<IKoiChartRepository, KoiChartRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-
+builder.Services.AddScoped<ICartDetailsRepository, CartDetailsRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<INormalFunctionsRepository, NormalFunctions>();
+builder.Services.AddScoped<IShopRepository, ShopRepository>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 //Ignore Loop
 builder.Services.AddControllers()
@@ -107,6 +111,12 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "KoiCareSystemAtHome");
+    options.RoutePrefix = String.Empty;
+});
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -124,3 +134,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Register VnPayService
+builder.Services.AddScoped<IVnPayService, VnPayService>();
