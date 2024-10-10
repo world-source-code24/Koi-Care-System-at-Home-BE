@@ -32,9 +32,9 @@ namespace KoiCareSystemAtHome.Controllers
 
         //Get All Koi of User
         [HttpGet("user/{userId}/[controller]")]
-        public async Task<IActionResult> GetKoiByUserId(int userId)
+        public async Task<IActionResult> GetKoiByUserId(int accId)
         {
-            var koiList = await _koiRepository.GetKoiByUserIdAsync((int)userId);
+            var koiList = await _koiRepository.GetKoiByUserIdAsync((int)accId);
             if (koiList.IsNullOrEmpty())
             {
                 return NotFound(new { message = "User don't have any Koi"});

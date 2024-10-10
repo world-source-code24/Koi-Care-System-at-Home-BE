@@ -1,4 +1,5 @@
 ﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +19,48 @@ namespace KoiCareSystemAtHome.Controllers
         }
         //Get All Note
         [HttpGet]
-        public async Task<IActionResult> GetAllNote()
+        public async Task<IActionResult> GetAllNote(int accId)
         {
-            //Get Id of Account in Token
-            var accIdClaim = User.FindFirst("Id")?.Value;
-            //try to tranfer idClaim to int account
-            if (accIdClaim == null || !int.TryParse(accIdClaim, out int accId))
-            {
-                return BadRequest("User ID not found or invalid.");
-            }
             var NoteList = await _noteRepository.GetListNote(accId);
             return Ok(new {Success = true, NoteList});
+        }
+        //Create new Note
+        [HttpPost]
+        public async Task<IActionResult> CreateNote(NoteDTO note, int accId)
+        {
+            var newKoi = new NotesTbl
+            {
+                AccId = accId,
+                NoteName = note.NoteName,
+                NoteText = note.NoteText,
+            };
+            await _noteRepository.AddAsync(newKoi);
+            return Ok(new {Success = true, Message = "Add Note Successful!"});
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateNote(NoteDTO note, int noteId)
+        {
+            var updateNote = await _context.NotesTbls.FindAsync(noteId);
+            if (updateNote == null)
+            {
+                return BadRequest(new {Success = false, Message = "We can't see Note to update!" });
+            }
+
+            updateNote.NoteName = note.NoteName;
+            updateNote.NoteText = note.NoteText;
+            await _noteRepository.UpdateAsync(updateNote);
+            await _context.SaveChangesAsync();
+            return Ok(new {Success = true, Message = "Update is successful!"});
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteNote(int noteId)
+        {
+            var deleteNote = await _context.NotesTbls.FindAsync(noteId);
+            if (deleteNote == null) return BadRequest(new { Success = false, Message = "We can't see Note to Delete!" });
+            await _noteRepository.DeleteAsync(noteId);
+            return Ok(new { Success = true, Message = "Delete successful!" });
         }
     }
 }

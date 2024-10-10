@@ -24,6 +24,7 @@ namespace KoiCareSystemAtHome.Repositories
             //Put information in to account Dto and put it in to controller layer
             var accountDto = new AccountDTO
             {
+                AccId = account.AccId,
                 Image = account.Image,
                 Name = account.Name,
                 Email = account.Email,

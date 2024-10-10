@@ -13,14 +13,6 @@ namespace KoiCareSystemAtHome.Controllers
     public class PondController : ControllerBase
     {
         private readonly KoiCareSystemDbContext _context;
-
-        //private readonly IAccountRepository _user;
-        //public PondController(KoiCareSystemDbContext context, IAccountRepository user)
-        //{
-        //    _context = context;
-        //    _user = user;
-        //}
-
         public PondController(KoiCareSystemDbContext context)
         {
             _context = context;

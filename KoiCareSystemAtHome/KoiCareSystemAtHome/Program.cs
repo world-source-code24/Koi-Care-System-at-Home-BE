@@ -30,6 +30,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
 builder.Services.AddScoped<IKoiRepository, KoiRepository>();
+builder.Services.AddScoped<IPondRepository, PondRepository>();
 builder.Services.AddScoped<IKoiChartRepository, KoiChartRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
