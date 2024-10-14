@@ -28,7 +28,6 @@ namespace KoiCareSystemAtHome.Repositories
                 }).ToListAsync();
             return results;
         }
-
         public async Task<List<ProductsTbl>> GetAllByShopIdAsync(int shopId)
         {
             var results = await _context.ProductsTbls.Where(p => p.ShopId == shopId)

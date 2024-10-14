@@ -1,4 +1,5 @@
 ﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,9 +23,11 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareSystem"))
 
 //Service Token
 builder.Services.AddScoped<TokenProvider>();
-
 builder.Services.AddControllersWithViews();
 
+//Service Send Email
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 //Service Repository
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

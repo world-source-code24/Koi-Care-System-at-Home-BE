@@ -21,15 +21,8 @@ namespace KoiCareSystemAtHome.Controllers
 
         //Profile cua User dang su dung
         [HttpGet("Profile")]
-        public async Task<IActionResult> GetProfile()
+        public async Task<IActionResult> GetProfile(int accId)
         {
-            //Get Id of Account in Token
-            var accIdClaim = User.FindFirst("Id")?.Value;
-            //try to tranfer idClaim to int account
-            if (accIdClaim == null || !int.TryParse(accIdClaim, out int accId))
-            {
-                return BadRequest("User ID not found or invalid.");
-            }
             AccountDTO profile = await _accountRepository.GetAccountProfile(accId);
             if (profile == null)
             {
@@ -39,15 +32,8 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpPut("Profile")]
-        public async Task<IActionResult> UpdateProfile(AccountDTO newUpdate)
+        public async Task<IActionResult> UpdateProfile(int accId, AccountDTO newUpdate)
         {
-            //Get Id of Account in Token
-            var accIdClaim = User.FindFirst("Id")?.Value;
-            //try to tranfer accIdClaim to int account
-            if (accIdClaim == null || !int.TryParse(accIdClaim, out int accId))
-            {
-                return BadRequest("User ID not found or invalid.");
-            }
             bool updateSuccess = await _accountRepository.UpdateProfile(accId, newUpdate);
             if (!updateSuccess)
             {

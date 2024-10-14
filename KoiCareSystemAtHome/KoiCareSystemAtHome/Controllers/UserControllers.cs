@@ -1,7 +1,8 @@
-﻿using Azure.Messaging;
-using KoiCareSystemAtHome.Entities;
+﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
+using KoiCareSystemAtHome.Repositories.IRepositories;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,11 +18,14 @@ namespace KoiCareSystemAtHome.Controllers
         private readonly KoiCareSystemDbContext _context;
         private readonly TokenProvider _tokenProvider;
         private readonly IConfiguration _configuration;
-        public UserController(KoiCareSystemDbContext context, TokenProvider tokenProvider, IConfiguration configuration)
+        private readonly IAccountRepository _accountRepository;
+        private readonly IEmailService _emailService;
+        public UserController(KoiCareSystemDbContext context, TokenProvider tokenProvider, IConfiguration configuration, IAccountRepository accountRepository, IEmailService)
         {
             _context = context;
             _tokenProvider = tokenProvider;
             _configuration = configuration;
+            _accountRepository = accountRepository;
         }
 
         [HttpPost("Login")]
@@ -159,16 +163,26 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return BadRequest(new { Susccess = false, Message = "Confirmed password is not correct!" });
             }
+
             var newAccount = new AccountTbl
             {
                 Name = name,
                 Phone = phone,
                 Email = email,
-                Password = password
+                Password = password,
+                Status = false,
             };
-            await _context.AccountTbls.AddAsync(newAccount);
+            await _accountRepository.AddAsync(newAccount);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Register Successfull" });
+
+            // Gửi email xác thực
+            var verificationLink = Url.Action("VerifyEmail", "User", new { token = verificationToken }, Request.Scheme);
+            var emailSubject = "Xác thực tài khoản của bạn";
+            var emailBody = $"Vui lòng xác thực tài khoản của bạn bằng cách nhấp vào liên kết sau: {verificationLink}";
+
+            await _emailService.SendEmailAsync(email);
+
+            return Ok(new { Success = true, Message = "Account registered successfully. Please check your email to verify your account." });
         }
     }
 }
