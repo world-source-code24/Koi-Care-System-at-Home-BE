@@ -21,7 +21,7 @@ namespace KoiCareSystemAtHome.Repositories
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
             var pay = new VnPayLibrary();
-            var urlCallBack = _configuration["Vnpay:ReturnUrl"];
+            var urlCallBack = _configuration["Vnpay:ReturnUrlTest"];
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
@@ -41,10 +41,49 @@ namespace KoiCareSystemAtHome.Repositories
             return paymentUrl;
         }
 
+        public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
+        {
+            var vnPay = new VnPayLibrary();
+
+            foreach (var (key, value) in collection)
+            {
+                if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
+                {
+                    vnPay.AddResponseData(key, value);
+                }
+            }
+
+            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
+            var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
+            var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
+            var vnpSecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
+            var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
+
+            var checkSignature = vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
+
+            if (!checkSignature)
+                return new PaymentResponseModel()
+                {
+                    Success = false
+                };
+
+            return new PaymentResponseModel()
+            {
+                Success = true,
+                PaymentMethod = "VnPay",
+                OrderDescription = orderInfo,
+                OrderId = orderId.ToString(),
+                PaymentId = vnPayTranId.ToString(),
+                TransactionId = vnPayTranId.ToString(),
+                Token = vnpSecureHash,
+                VnPayResponseCode = vnpResponseCode
+            };
+        }
+
         public PaymentResponseModel PaymentExecute(IQueryCollection collections)
         {
             var pay = new VnPayLibrary();
-            var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
+            var response = GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
 
             return response;
         }

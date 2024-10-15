@@ -87,7 +87,7 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { Cart = cartDTO, Details = getCartDetails });
         }
 
-        [HttpGet("Get-All-Cart-And-Details-From-User")]
+        [HttpGet("Get-All-Cart-And-Details-From-User (For display)")]
         public async Task<ActionResult<List<FullCartDetailDTO>>> GetFullInformation(int userID)
         {
             var cartResult = await _cartRepository.GetUserCarts(userID);      

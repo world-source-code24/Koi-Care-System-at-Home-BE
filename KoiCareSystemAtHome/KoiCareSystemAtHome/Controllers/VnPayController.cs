@@ -17,14 +17,21 @@ namespace KoiCareSystemAtHome.Controllers
             _vnPayService = vnPayService;
         }
 
-        [HttpPost("CreatePayment")]
+        [HttpPost("CreatePayment (Ko chuyen qua trang duoc nhung lay url duoc)")]
         public IActionResult CreatePayment(PaymentInformationModel model)
         {
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
             return Redirect(url);
         }
 
-        [HttpGet("PaymentCallback")]
+        [HttpPost("TestGetUrl")]
+        public ActionResult<string> CreatePaymentTest(PaymentInformationModel model)
+        {
+            var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
+            return Ok(url);
+        }
+
+        [HttpGet("PaymentCallback (Chua Test)")]
         public IActionResult PaymentCallback()
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
