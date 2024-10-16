@@ -10,6 +10,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using MimeKit;
 using System.Diagnostics;
+using System.Net.Mail;
+
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -147,9 +149,14 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPut]
         public async Task<IActionResult> verifyAccount(int userCode, int verifyCode, string email)
         {
-            if (userCode == verifyCode) {
+
+            if (userCode == verifyCode)
+            {
                 bool success = await _accountRepository.VerifyAccount(email);
-                if (success) {
+                if (success)
+                {
+                    _context.SaveChanges();
+
                     return Ok(new { success = true });
                 }
             }

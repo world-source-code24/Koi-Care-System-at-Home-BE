@@ -87,17 +87,19 @@ namespace KoiCareSystemAtHome.Repositories
         }
         public async Task<bool> VerifyAccount(string email)
         {
+
+            if (email == null)
+            {
+                return false;
+            }
             var account = await _context.AccountTbls.FirstOrDefaultAsync(acc => acc.Email == email);
             if (account == null)
             {
                 return false;
             }
-            if (email == null)
-            {
-                return false; 
-            }
+
             account.Status = true;
-            _context.SaveChanges();
+
             return true;
         }
     }
