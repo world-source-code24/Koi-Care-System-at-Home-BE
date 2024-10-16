@@ -10,7 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using MimeKit;
 using System.Diagnostics;
-using System.Net.Mail;
+
 
 
 namespace KoiCareSystemAtHome.Controllers
