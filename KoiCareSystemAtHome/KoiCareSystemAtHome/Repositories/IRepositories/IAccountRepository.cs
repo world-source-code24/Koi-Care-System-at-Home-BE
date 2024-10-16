@@ -11,7 +11,6 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         //Cac Interface dung cho profile cua user hien tai
         //Get Profile Account by id
         Task<AccountDTO> GetAccountProfile(int id);
-
         //Update Profile
         Task<bool> UpdateProfile(int id, AccountDTO updateInformation);
 
@@ -19,5 +18,7 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         //Lay toan bo Account
         Task<List<AccountTbl>> GetAllAccounts();
         Task<List<AccountTbl>> GetAllAccountsByRole(string role);
+        //Get Account by Email
+        Task<bool> VerifyAccount(string email);
     }
 }

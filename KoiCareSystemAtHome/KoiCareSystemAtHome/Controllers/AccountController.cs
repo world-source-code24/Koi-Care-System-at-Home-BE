@@ -21,8 +21,15 @@ namespace KoiCareSystemAtHome.Controllers
 
         //Profile cua User dang su dung
         [HttpGet("Profile")]
-        public async Task<IActionResult> GetProfile(int accId)
+        public async Task<IActionResult> GetProfile()
         {
+            var ClaimAccId = User.FindFirst("Id")?.Value;
+
+            if (ClaimAccId == null || !int.TryParse(ClaimAccId, out int accId))
+            {
+                return Unauthorized("ID không hợp lệ trong token");
+            }
+
             AccountDTO profile = await _accountRepository.GetAccountProfile(accId);
             if (profile == null)
             {

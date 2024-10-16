@@ -6,6 +6,7 @@ namespace KoiCareSystemAtHome.Repositories
     {
         public Task<float> foodCalculator(int numberKoi, float ratioFood, float weightKoi)
         {
+
             throw new NotImplementedException();
         }
 
