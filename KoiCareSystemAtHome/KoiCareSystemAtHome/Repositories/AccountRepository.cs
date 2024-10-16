@@ -3,6 +3,7 @@ using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using System.Numerics;
 
 namespace KoiCareSystemAtHome.Repositories
 {
@@ -11,16 +12,28 @@ namespace KoiCareSystemAtHome.Repositories
         //private readonly IAccountRepository _accountRepository;
         private readonly KoiCareSystemDbContext _context;
 
-        //public AccountRepository(AccountRepository accountRepository, KoiCareSystemDbContext context)
-        //{
-        //    _accountRepository = accountRepository;
-        //    _context = context;
-        //}
-        public AccountRepository(KoiCareSystemDbContext context) : base(context) 
+        public AccountRepository(KoiCareSystemDbContext context) : base(context)
         {
             _context = context;
         }
-
+        //Register Email
+        public async Task<bool> RegisterAccount(AccountDTO account)
+        {
+            if (account == null)
+            {
+                return false;
+            }
+            var newAccount = new AccountTbl
+            {
+                Name = account.Name,
+                Phone = account.Phone,
+                Email = account.Email,
+                Password = account.Password,
+            };
+            await _context.AccountTbls.AddAsync(newAccount);
+            await _context.SaveChangesAsync();
+            return true;
+        }
         public async Task<AccountDTO> GetAccountProfile(int id)
         {
             //Get information of Account in Db
@@ -33,6 +46,7 @@ namespace KoiCareSystemAtHome.Repositories
             //Put information in to account Dto and put it in to controller layer
             var accountDto = new AccountDTO
             {
+                AccId = account.AccId,
                 Image = account.Image,
                 Name = account.Name,
                 Email = account.Email,
@@ -73,17 +87,17 @@ namespace KoiCareSystemAtHome.Repositories
         }
         public async Task<bool> VerifyAccount(string email)
         {
+            if (email == null)
+            {
+                return false;
+            }
             var account = await _context.AccountTbls.FirstOrDefaultAsync(acc => acc.Email == email);
             if (account == null)
             {
                 return false;
             }
-            if (email == null)
-            {
-                return false; 
-            }
+
             account.Status = true;
-            _context.SaveChanges();
             return true;
         }
     }
