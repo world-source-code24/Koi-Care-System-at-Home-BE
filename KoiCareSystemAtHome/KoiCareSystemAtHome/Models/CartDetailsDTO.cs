@@ -4,4 +4,9 @@
     public string ProductName { get; set; }
     public int Quantity { get; set; }
     public string Category { get; set; }
+
+    public override string? ToString()
+    {
+        return $"{ProductName}";
+    }
 }

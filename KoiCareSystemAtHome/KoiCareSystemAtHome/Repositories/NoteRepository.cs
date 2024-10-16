@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KoiCareSystemAtHome.Repositories
 {
-    public class NoteRepository : INoteRepository
+    public class NoteRepository : GenericRepository<NotesTbl>, INoteRepository
     {
         private readonly KoiCareSystemDbContext _context;
-        public NoteRepository(KoiCareSystemDbContext context)
+        public NoteRepository(KoiCareSystemDbContext context) : base(context)
         {
             _context = context;
         }

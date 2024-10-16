@@ -18,7 +18,7 @@ namespace KoiCareSystemAtHome.Repositories
         public async Task<CartDetailsDTO> GetProductInfo(int productId)
         {
             var product =await _context.ProductsTbls.FindAsync(productId);
-            
+            //if (product == null) return null;
             var cartDetails = new CartDetailsDTO
             {
                 Price = product.Price,

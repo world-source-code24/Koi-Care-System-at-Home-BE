@@ -1,4 +1,5 @@
 ﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,14 +23,17 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareSystem"))
 
 //Service Token
 builder.Services.AddScoped<TokenProvider>();
-
 builder.Services.AddControllersWithViews();
 
+//Service Send Email
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 //Service Repository
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IWaterParameterRepository, WaterParameterRepository>();
 builder.Services.AddScoped<IKoiRepository, KoiRepository>();
+builder.Services.AddScoped<IPondRepository, PondRepository>();
 builder.Services.AddScoped<IKoiChartRepository, KoiChartRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -37,6 +41,7 @@ builder.Services.AddScoped<ICartDetailsRepository, CartDetailsRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<INormalFunctionsRepository, NormalFunctions>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 //Ignore Loop
 builder.Services.AddControllers()
@@ -132,3 +137,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Register VnPayService
+builder.Services.AddScoped<IVnPayService, VnPayService>();

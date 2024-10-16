@@ -87,6 +87,7 @@ namespace KoiCareSystemAtHome.Repositories
         }
         public async Task<bool> VerifyAccount(string email)
         {
+
             if (email == null)
             {
                 return false;
@@ -98,6 +99,7 @@ namespace KoiCareSystemAtHome.Repositories
             }
 
             account.Status = true;
+
             return true;
         }
     }

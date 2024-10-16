@@ -69,13 +69,54 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(getCart);
         }
 
-        [HttpGet("Get-Single-Cart-And-Details-From-User/(IN PROGRESS)")]
-        public async Task<ActionResult<CartDetailsDTO>> GetFullInformation(int userID, int productID)
+        [HttpGet("Get-Single-Cart-And-Details-From-User/")]
+        public async Task<ActionResult<(CartDTO,CartDetailsDTO)>> GetCartInformation(int userID, int productID)
         {
             var getCart = await _context.CartTbls.FindAsync(userID, productID);
-            var getCartDetails = _cartDetailsRepository.GetProductInfo(productID);
-            return Ok((getCartDetails));
+            var getCartDetails = await _cartDetailsRepository.GetProductInfo(productID);
+            if (getCart == null || getCartDetails == null)
+            {
+                return NotFound("Cart or Product details not found.");
+            }
+            var cartDTO = new CartDTO
+            {
+                AccId = userID,
+                ProductId = productID,
+                Quantity = getCart.Quantity
+            };
+            return Ok(new { Cart = cartDTO, Details = getCartDetails });
         }
+
+        [HttpGet("Get-All-Cart-And-Details-From-User")]
+        public async Task<ActionResult<List<FullCartDetailDTO>>> GetFullInformation(int userID)
+        {
+            var cartResult = await _cartRepository.GetUserCarts(userID);      
+            if (cartResult == null) return NotFound("Object is null");
+            var fullCartDetailsList = new List<FullCartDetailDTO>();
+
+            foreach (var cart in cartResult)
+            {
+                var cartDTO = new CartDTO
+                {
+                    AccId = userID,
+                    ProductId = cart.ProductId,
+                    Quantity = cart.Quantity
+                };
+
+                var cartDetail = await _cartDetailsRepository.GetProductInfo(cart.ProductId);
+                if (cartDetail != null)
+                {
+                    fullCartDetailsList.Add(new FullCartDetailDTO
+                    {
+                        Cart = cartDTO,
+                        CartDetails = cartDetail
+                    });
+                }
+            }
+            return Ok( fullCartDetailsList );
+        }
+
+
 
         [HttpPost("Add-Carts-For-User/{userID}")]
         public async Task<ActionResult<CartDTO>> AddCart(int userID, CartDTO cartAdd)
@@ -143,7 +184,7 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        [HttpDelete("Delete-All--User-Carts")]
+        [HttpDelete("Delete-All-User-Carts")]
         public async Task<IActionResult> DeleteAllUserCarts (int userID)
         {
             var listCart = await _context.CartTbls.Where(c => c.AccId == userID).ToListAsync();
