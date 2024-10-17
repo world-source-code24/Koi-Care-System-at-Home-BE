@@ -63,7 +63,7 @@ namespace KoiCareSystemAtHome.Repositories
 
         public async Task<List<AccountTbl>> GetAllAccountsByRole(string role)
         {
-            return await _context.AccountTbls.Where(a => a.Role.Equals("admin")).ToListAsync();
+            return await _context.AccountTbls.Where(a => a.Role.Equals(role)).ToListAsync();
         }
 
 
@@ -98,9 +98,10 @@ namespace KoiCareSystemAtHome.Repositories
                 return false;
             }
 
-            account.Status = true;
+           account.Status = true;
+           await  _context.SaveChangesAsync();
 
-            return true;
+           return true;
         }
     }
 }
