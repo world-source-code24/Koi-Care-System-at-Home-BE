@@ -52,6 +52,19 @@ namespace KoiCareSystemAtHome.Repositories
                 }).ToListAsync();
         }
 
+        public bool  DeleteAllCart(int userID)
+        {
+            var cart = _context.CartTbls.Where(c => c.AccId == userID).ToListAsync().Result;
+            if (cart == null)
+            {
+                return (false);
+            }
+            else
+            {
+                _context.CartTbls.RemoveRange(cart);
+                return true;
+            }
+        }
         //public async Task<List<CartDTO>> ShowAllUserCarts(int userID)
         //{
         //    bool checkUserExist = await _context.AccountTbls.AnyAsync(acc => acc.AccId == userID);
@@ -69,5 +82,6 @@ namespace KoiCareSystemAtHome.Repositories
         //        })
         //        .ToListAsync();
         //}
+
     }
 }

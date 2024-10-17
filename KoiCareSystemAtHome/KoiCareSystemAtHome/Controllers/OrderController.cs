@@ -36,21 +36,21 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        [HttpPost("Create-Order-Without-Calculate-Money")]
-        public async Task<IActionResult> CreateOrder(int accID)
-        {
-            var order = new OrdersTbl
-            {
-                AccId = accID,
-                Date = DateOnly.FromDateTime(DateTime.Now),
-                StatusOrder = "Pending",
-                StatusPayment = "Unpaid",
-                TotalAmount = 0
-            };
-            _context.OrdersTbls.Add(order);
-            await _context.SaveChangesAsync();
-            return Ok(new { status = true, message = "Add order" });
-        }
+        //[HttpPost("Create-Order-Without-Calculate-Money")]
+        //public async Task<IActionResult> CreateOrder(int accID)
+        //{
+        //    var order = new OrdersTbl
+        //    {
+        //        AccId = accID,
+        //        Date = DateOnly.FromDateTime(DateTime.Now),
+        //        StatusOrder = "Pending",
+        //        StatusPayment = "Unpaid",
+        //        TotalAmount = 0
+        //    };
+        //    _context.OrdersTbls.Add(order);
+        //    await _context.SaveChangesAsync();
+        //    return Ok(new { status = true, message = "Add order" });
+        //}
 
         [HttpPost("Create-Order-And-Calculate-Money")]
         public async Task<IActionResult> CreateOrderAndMoney(int accID)

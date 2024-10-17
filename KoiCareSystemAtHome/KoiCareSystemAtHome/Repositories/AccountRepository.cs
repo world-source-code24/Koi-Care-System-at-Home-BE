@@ -72,5 +72,12 @@ namespace KoiCareSystemAtHome.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> UpdateRole(int id)
+        {
+            var getProfile = GetAccountProfile(id);
+
+        }
+
     }
 }

@@ -187,14 +187,13 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpDelete("Delete-All-User-Carts")]
         public async Task<IActionResult> DeleteAllUserCarts (int userID)
         {
-            var listCart = await _context.CartTbls.Where(c => c.AccId == userID).ToListAsync();
-            if (listCart.Count == 0)
+            var check = _cartRepository.DeleteAllCart;
+            if (!check)
             {
                 return NotFound("User cart is empty or not found");
             }
             else
-            {
-                _context.CartTbls.RemoveRange(listCart);
+            {                
                 await _context.SaveChangesAsync();
                 return Ok(new { status = true, message = "Payment" });
             }

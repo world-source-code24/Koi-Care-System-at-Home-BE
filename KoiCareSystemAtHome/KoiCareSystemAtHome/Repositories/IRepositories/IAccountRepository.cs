@@ -15,6 +15,7 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         Task<List<AccountTbl>> GetAllAccounts();
         Task<List<AccountTbl>> GetAllAccountsByRole(string role);
 
+        Task<bool> UpdateRole(int id);
         //Cac Interface dung cho Admin
         //Lay toan bo Account
     }

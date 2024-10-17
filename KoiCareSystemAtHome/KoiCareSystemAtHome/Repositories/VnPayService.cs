@@ -15,6 +15,7 @@ namespace KoiCareSystemAtHome.Repositories
             _configuration = configuration;
         }
 
+        // Tao dia chi url 
         public string CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
@@ -40,6 +41,7 @@ namespace KoiCareSystemAtHome.Repositories
 
             return paymentUrl;
         }
+
 
         public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
         {
@@ -79,6 +81,7 @@ namespace KoiCareSystemAtHome.Repositories
                 VnPayResponseCode = vnpResponseCode
             };
         }
+
 
         public PaymentResponseModel PaymentExecute(IQueryCollection collections)
         {

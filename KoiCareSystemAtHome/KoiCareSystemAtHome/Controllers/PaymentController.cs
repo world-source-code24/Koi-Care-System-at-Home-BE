@@ -7,30 +7,28 @@ namespace KoiCareSystemAtHome.Controllers
 {
     public class PaymentController : ControllerBase
     {
-        private readonly CartController _cartController;
         private readonly OrderController _orderController;
         private readonly OrderDetailsController _orderDetailsController;
         private readonly ICartRepository _cartRepository;
 
-        public PaymentController(CartController cartController, OrderController orderController, OrderDetailsController orderDetailsController, ICartRepository cartRepository)
+        public PaymentController( OrderController orderController, OrderDetailsController orderDetailsController, ICartRepository cartRepository)
         {
-            _cartController = cartController;
             _orderController = orderController;
             _orderDetailsController = orderDetailsController;
             _cartRepository = cartRepository;
         }
 
-        [HttpPut ("Add-Order,OrderDetails-Delete-Cart.(Ko the goi tat duoc)")]
+        [HttpPut ("Add-Order,OrderDetails-Delete-Cart(In progress)")]
         public async Task<IActionResult> TotalWhatHappenWhenPayment(int userID)
         {
             try
             {
-                    // Lay cart ra chuyen qua order, orderdetails, orderDetails se lay tu cart, 
+                    // Lay cart list
                 var cartList = await _cartRepository.GetUserCarts (userID);
                 if (cartList == null) return NotFound("Not found cart with this user");
-                await _orderController.CreateOrderAndMoney(userID);
-                await _orderDetailsController.CreateOrderDetails(userID, cartList);
-                await _cartController.DeleteAllUserCarts(userID);
+                // Lay order list
+                _orderDetailsController.CreateOrderDetails(userID, cartList);
+                _cartRepository.DeleteAllCart(userID);
                 return Ok(new { message = "Success" });
             }
             catch (Exception ex)
@@ -39,5 +37,7 @@ namespace KoiCareSystemAtHome.Controllers
                 return BadRequest(new { message = "An error occurred", error = ex.Message });
             }
         }
+
+
     }
 }
