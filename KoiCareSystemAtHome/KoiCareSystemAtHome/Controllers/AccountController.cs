@@ -39,9 +39,9 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpPut("Profile")]
-        public async Task<IActionResult> UpdateProfile(int accId, AccountDTO newUpdate)
+        public async Task<IActionResult> UpdateProfile(int accId, string name, string image, string phone, string address)
         {
-            bool updateSuccess = await _accountRepository.UpdateProfile(accId, newUpdate);
+            bool updateSuccess = await _accountRepository.UpdateProfile(accId, name, image, phone, address);
             if (!updateSuccess)
             {
                 return BadRequest(new { success = false, message = "Cannot update Profile" });
@@ -54,7 +54,8 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> GetAllAccounts()
         {
             var accs = await _accountRepository.GetAllAccounts();
-            return Ok(new {success = true, accs = accs});
+            int totalAccounts = await _accountRepository.GetTotalAccounts();
+            return Ok(new {success = true, accs = accs, total = totalAccounts});
         }
 
         //Get all by role
@@ -63,14 +64,13 @@ namespace KoiCareSystemAtHome.Controllers
         {
             try
             {
-
-
                 if (role == null)
                 {
                     return BadRequest("Role should by provided!!");
                 }
                 var accs = await _accountRepository.GetAllAccountsByRole(role);
-                return Ok(new { success = true, accs = accs });
+                int totalAccounts = await _accountRepository.GetTotalAccountsByRole(role);
+                return Ok(new { accs = accs, total = totalAccounts });
             }
             catch (Exception ex)
             {
@@ -113,7 +113,15 @@ namespace KoiCareSystemAtHome.Controllers
                 }
                 acc.Role = "member";
                 acc.StartDate = DateOnly.FromDateTime(DateTime.Now);
+                var cartTbl = new CartTbl
+                {
+                    ProductId = 1002,
+                    AccId = accId,
+                    Quantity = 1
+                };
+                _context.CartTbls.Add(cartTbl);
                 await _accountRepository.UpdateAsync(acc);
+                await _context.SaveChangesAsync();
                 return Ok(new { success = true, message = "Update successfully!!"});
             }
             catch (Exception ex)
@@ -123,7 +131,7 @@ namespace KoiCareSystemAtHome.Controllers
         }
         //Changing password
         [HttpPut("change-password{accId}")]
-        public async Task<IActionResult> ChangePassword(int accId, string password)
+        public async Task<IActionResult> ChangePassword(int accId, string changePassword, string confirmedPassword)
         {
             try
             {
@@ -132,7 +140,10 @@ namespace KoiCareSystemAtHome.Controllers
                 {
                     return NotFound("No account available!!");
                 }
-                acc.Password = password;
+                if(acc.Password == confirmedPassword)
+                {
+                    acc.Password = changePassword;
+                }
                 await _accountRepository.UpdateAsync(acc);
                 return Ok(new { success = true, message = "Changing successfully!!" });
             }

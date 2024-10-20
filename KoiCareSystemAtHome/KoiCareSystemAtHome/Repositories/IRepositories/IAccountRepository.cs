@@ -8,17 +8,19 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
     {
         //Tao tai khoan moi
         Task<bool> RegisterAccount(AccountDTO account);
-        //Cac Interface dung cho profile cua user hien tai
+
         //Get Profile Account by id
         Task<AccountDTO> GetAccountProfile(int id);
         //Update Profile
-        Task<bool> UpdateProfile(int id, AccountDTO updateInformation);
+        Task<bool> UpdateProfile(int id, string name, string image, string phone, string address);
 
-        //Cac Interface dung cho Admin
         //Lay toan bo Account
         Task<List<AccountTbl>> GetAllAccounts();
         Task<List<AccountTbl>> GetAllAccountsByRole(string role);
         //Get Account by Email
         Task<bool> VerifyAccount(string email);
+        //Tinh total Account
+        Task<int> GetTotalAccounts();
+        Task<int> GetTotalAccountsByRole(string role);
     }
 }
