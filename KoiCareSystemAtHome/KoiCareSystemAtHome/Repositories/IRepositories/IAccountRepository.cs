@@ -17,7 +17,6 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         //Lay toan bo Account
         Task<List<AccountTbl>> GetAllAccounts();
         Task<List<AccountTbl>> GetAllAccountsByRole(string role);
-        //Get Account by Email
         Task<bool> VerifyAccount(string email);
         //Tinh total Account
         Task<int> GetTotalAccounts();
