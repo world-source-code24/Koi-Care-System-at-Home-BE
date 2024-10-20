@@ -3,6 +3,7 @@ using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -23,13 +24,13 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpGet("Profile")]
         public async Task<IActionResult> GetProfile()
         {
-            //Get Id of Account in Token
-            var accIdClaim = User.FindFirst("Id")?.Value;
-            //try to tranfer idClaim to int account
-            if (accIdClaim == null || !int.TryParse(accIdClaim, out int accId))
+            var ClaimAccId = User.FindFirst("Id")?.Value;
+
+            if (ClaimAccId == null || !int.TryParse(ClaimAccId, out int accId))
             {
-                return BadRequest("User ID not found or invalid.");
+                return Unauthorized("ID không hợp lệ trong token");
             }
+
             AccountDTO profile = await _accountRepository.GetAccountProfile(accId);
             if (profile == null)
             {
@@ -39,15 +40,8 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpPut("Profile")]
-        public async Task<IActionResult> UpdateProfile(AccountDTO newUpdate)
+        public async Task<IActionResult> UpdateProfile(int accId, AccountDTO newUpdate)
         {
-            //Get Id of Account in Token
-            var accIdClaim = User.FindFirst("Id")?.Value;
-            //try to tranfer accIdClaim to int account
-            if (accIdClaim == null || !int.TryParse(accIdClaim, out int accId))
-            {
-                return BadRequest("User ID not found or invalid.");
-            }
             bool updateSuccess = await _accountRepository.UpdateProfile(accId, newUpdate);
             if (!updateSuccess)
             {
@@ -61,6 +55,10 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> GetAllAccounts()
         {
             var accs = await _accountRepository.GetAllAccounts();
+            if ( accs.IsNullOrEmpty())
+            {
+                return BadRequest("No accounts available!!");
+            }
             return Ok(new {success = true, accs = accs});
         }
 
@@ -70,14 +68,15 @@ namespace KoiCareSystemAtHome.Controllers
         {
             try
             {
-
-
-                if (role == null)
+                if (role != null)
                 {
-                    return BadRequest("Role should by provided!!");
+                    var accs = await _accountRepository.GetAllAccountsByRole(role);
+                    if (!accs.IsNullOrEmpty())
+                    {
+                        return Ok(new { success = true, accs = accs });
+                    }
                 }
-                var accs = await _accountRepository.GetAllAccountsByRole(role);
-                return Ok(new { success = true, accs = accs });
+                return BadRequest("No accounts available!!");
             }
             catch (Exception ex)
             {

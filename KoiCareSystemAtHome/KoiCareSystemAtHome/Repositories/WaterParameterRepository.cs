@@ -84,5 +84,33 @@ namespace KoiCareSystemAtHome.Repositories
 
             return result;
         }
+
+        public async Task<WaterParametersTbl> UpdateParameter(int pondId, WaterParametersTbl updateParam, WaterParameterDTO param)
+        {
+
+            updateParam.Temperature = param.Temperature;
+
+            updateParam.Salt = param.Salt;
+
+            updateParam.PhLevel = param.PhLevel;
+
+            updateParam.O2Level = param.O2Level;
+
+            updateParam.No2Level = param.No2Level;
+
+            updateParam.No3Level = param.No3Level;
+
+            updateParam.Po4Level = param.Po4Level;
+
+            updateParam.TotalChlorines = param.TotalChlorines;
+
+            updateParam.Date = DateTime.Now;
+
+            updateParam.Note = param.Note;
+            updateParam.PondId = pondId;
+
+            return updateParam;
+
+        }
     }
 }
