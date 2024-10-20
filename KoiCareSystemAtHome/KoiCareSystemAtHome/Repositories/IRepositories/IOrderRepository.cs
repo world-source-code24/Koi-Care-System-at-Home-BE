@@ -6,6 +6,7 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
     {
         List<int> GetOrderId(int id);
 
-        List<OrderDTO> GetListOrder (int id);
+        Task<bool> CreateOrder(int id);
+        //List<OrderDTO> GetListOrder (int id);
     }
 }

@@ -38,6 +38,8 @@ builder.Services.AddScoped<ICartDetailsRepository, CartDetailsRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<INormalFunctionsRepository, NormalFunctions>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
+builder.Services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 //Ignore Loop

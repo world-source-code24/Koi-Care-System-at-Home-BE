@@ -73,9 +73,19 @@ namespace KoiCareSystemAtHome.Repositories
             return true;
         }
 
-        public async Task<bool> UpdateRole(int id)
+        public async Task<bool> UpdateRole(int id, bool check)
         {
-            var getProfile = GetAccountProfile(id);
+            var getProfile =await GetAccountProfile(id);
+            if (check)
+            {
+                getProfile.Role = AllEnum.UserRole.Member.ToString();
+                return true;
+            }
+            else
+            {
+               getProfile.Role= AllEnum.UserRole.Guest.ToString();
+                return false;
+            }
 
         }
 

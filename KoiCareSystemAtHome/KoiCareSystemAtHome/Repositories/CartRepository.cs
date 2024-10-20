@@ -52,16 +52,17 @@ namespace KoiCareSystemAtHome.Repositories
                 }).ToListAsync();
         }
 
-        public bool  DeleteAllCart(int userID)
+        public async Task<bool>  DeleteAllCart(int userID)
         {
             var cart = _context.CartTbls.Where(c => c.AccId == userID).ToListAsync().Result;
-            if (cart == null)
+            if (!cart.Any())
             {
                 return (false);
             }
             else
             {
                 _context.CartTbls.RemoveRange(cart);
+                await _context.SaveChangesAsync();
                 return true;
             }
         }

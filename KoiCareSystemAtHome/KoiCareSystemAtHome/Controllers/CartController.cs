@@ -184,19 +184,19 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        [HttpDelete("Delete-All-User-Carts")]
-        public async Task<IActionResult> DeleteAllUserCarts (int userID)
-        {
-            var check = _cartRepository.DeleteAllCart;
-            if (!check)
-            {
-                return NotFound("User cart is empty or not found");
-            }
-            else
-            {                
-                await _context.SaveChangesAsync();
-                return Ok(new { status = true, message = "Payment" });
-            }
-        }
+        //[HttpDelete("Delete-All-User-Carts")]
+        //public async Task<IActionResult> DeleteAllUserCarts (int userID)
+        //{
+        //    var check = _cartRepository.DeleteAllCart;
+        //    if (!check)
+        //    {
+        //        return NotFound("User cart is empty or not found");
+        //    }
+        //    else
+        //    {                
+        //        await _context.SaveChangesAsync();
+        //        return Ok(new { status = true, message = "Payment" });
+        //    }
+        //}
     }
 }

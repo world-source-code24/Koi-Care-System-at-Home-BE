@@ -22,6 +22,7 @@ namespace KoiCareSystemAtHome.Repositories
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
             var pay = new VnPayLibrary();
+            // Dung de edit dia chi url tra ve
             var urlCallBack = _configuration["Vnpay:ReturnUrlTest"];
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);

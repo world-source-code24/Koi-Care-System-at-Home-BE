@@ -33,17 +33,17 @@ namespace KoiCareSystemAtHome.Controllers
 
         [HttpPut("Add-Order-Details (read-code-note)")]
         public async Task<IActionResult> CreateOrderDetails(int orderID, List<CartDTO> cartDTOs)
+
         // Vi mot li do nao do tren swagger ko nhan list, nhung neu su dung ham
         //var cartDTOs =await _cart.GetUserCarts(1); thi lai nhan.
+
         {
             // lAY ORDERID
-            var existingOrder = await _context.OrdersTbls.FindAsync(orderID);
-            if (existingOrder == null) return NotFound(new { message = "Can't find orderID" });
-
-            
+            //var existingOrder = await _context.OrdersTbls.FindAsync(orderID);
+            //if (existingOrder == null) return NotFound(new { message = "Can't find orderID" });       
             //var cartDTOs =await _cart.GetUserCarts(1);
             // lAY User Id tu OrderId do
-            int? userId = existingOrder.AccId;
+            //int? userId = existingOrder.AccId;
             //Console.WriteLine("Order ID");
             //Console.WriteLine(existingOrder.OrderId);
             //Console.WriteLine("User ID");
@@ -52,19 +52,19 @@ namespace KoiCareSystemAtHome.Controllers
             // To check if there any bug in progress
             // Will delete if sure
             // Check userID voi OrderId co match nhau ko
-            foreach (var cart in cartDTOs)
-            {
-                if (cart.AccId != userId) return BadRequest("User cart didn't match user order id");
-            }
+            //foreach (var cart in cartDTOs)
+            //{
+            //    if (cart.AccId != userId) return BadRequest("User cart didn't match user order id");
+            //}
             if (cartDTOs.Count ==0)
             {
                 return NotFound("The cart is empty");
             }
             Console.WriteLine($"Received {cartDTOs.Count} cart items.");
-            foreach (var cart in cartDTOs)
-            {
-                Console.WriteLine($"AccId: {cart.AccId}, ProductId: {cart.ProductId}, Quantity: {cart.Quantity}");
-            }
+            //foreach (var cart in cartDTOs)
+            //{
+            //    Console.WriteLine($"AccId: {cart.AccId}, ProductId: {cart.ProductId}, Quantity: {cart.Quantity}");
+            //}
             List<OrderDetailsTbl> listOrder = new List<OrderDetailsTbl>();
             foreach (var cart in cartDTOs)
             {
