@@ -10,6 +10,6 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
 
         Task<List<CartDTO>> GetUserCarts(int userID);
 
-        bool DeleteAllCart(int userID);
+        Task<bool> DeleteAllCart(int userID);
     }
 }

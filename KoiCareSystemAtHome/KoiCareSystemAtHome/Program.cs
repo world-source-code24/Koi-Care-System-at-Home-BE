@@ -45,6 +45,9 @@ builder.Services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 
+//Enum
+builder.Services.AddScoped<AllEnum>();
+
 //Ignore Loop
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

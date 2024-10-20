@@ -73,7 +73,7 @@ namespace KoiCareSystemAtHome.Repositories
 
                 _context.OrdersTbls.Add(order);
                 await _context.SaveChangesAsync();
-
+                Console.WriteLine(order.OrderId);
                 return (true, order.OrderId);
             }
             catch (Exception ex)
