@@ -87,7 +87,7 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { Cart = cartDTO, Details = getCartDetails });
         }
 
-        [HttpGet("Get-All-Cart-And-Details-From-User")]
+        [HttpGet("Get-All-Cart-And-Details-From-User (For display)")]
         public async Task<ActionResult<List<FullCartDetailDTO>>> GetFullInformation(int userID)
         {
             var cartResult = await _cartRepository.GetUserCarts(userID);      
@@ -184,20 +184,19 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        [HttpDelete("Delete-All-User-Carts")]
-        public async Task<IActionResult> DeleteAllUserCarts (int userID)
-        {
-            var listCart = await _context.CartTbls.Where(c => c.AccId == userID).ToListAsync();
-            if (listCart.Count == 0)
-            {
-                return NotFound("User cart is empty or not found");
-            }
-            else
-            {
-                _context.CartTbls.RemoveRange(listCart);
-                await _context.SaveChangesAsync();
-                return Ok(new { status = true, message = "Payment" });
-            }
-        }
+        //[HttpDelete("Delete-All-User-Carts")]
+        //public async Task<IActionResult> DeleteAllUserCarts (int userID)
+        //{
+        //    var check = _cartRepository.DeleteAllCart;
+        //    if (!check)
+        //    {
+        //        return NotFound("User cart is empty or not found");
+        //    }
+        //    else
+        //    {                
+        //        await _context.SaveChangesAsync();
+        //        return Ok(new { status = true, message = "Payment" });
+        //    }
+        //}
     }
 }
