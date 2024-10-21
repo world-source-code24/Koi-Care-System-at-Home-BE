@@ -5,6 +5,7 @@ using KoiCareSystemAtHome.Entities;
 using System.Threading.Tasks;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using System.Linq;
+using System.Text;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -38,10 +39,10 @@ namespace KoiCareSystemAtHome.Controllers
 
 
         // GET: User for when user choose a specific pond
-        [HttpGet("/api/Show-Specific-Pond/{id} ")]
+        [HttpGet("/api/Show-Specific-Pond/{id}")]
         public async Task<ActionResult<PondDTO>> GetPond(int id)
         {
-            var pond = await _context.PondsTbls.FindAsync(id);
+            var pond = await _context.PondsTbls.Where(p => p.PondId == id).FirstOrDefaultAsync();
             if (pond == null)
             {
                 return NotFound(new { status = "Fail", message = "This pond didn't exist" });

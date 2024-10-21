@@ -88,7 +88,7 @@ namespace KoiCareSystemAtHome.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Success", status = true });
+            return Ok(new { message = "Success", status = true , listOrder });
         }
 
         //[HttpPut("Add-Order-Details-Test")]

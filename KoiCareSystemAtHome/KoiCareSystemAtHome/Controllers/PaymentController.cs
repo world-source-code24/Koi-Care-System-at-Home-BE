@@ -75,9 +75,9 @@ namespace KoiCareSystemAtHome.Controllers
             var order = await _context.OrdersTbls.Where(o => o.OrderId == orderID).FirstOrDefaultAsync();
             PaymentInformationModel model = new PaymentInformationModel
             {
-                Amount = order.TotalAmount.Value,
+                Amount = (float)order.TotalAmount.Value,
                 Name = orderID.ToString(),
-                OrderDescription = "KoiItem",
+                OrderDescription = "KoiItem",   
                 OrderType = "Item"
 
             };
