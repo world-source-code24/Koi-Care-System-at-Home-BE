@@ -41,15 +41,8 @@ public partial class KoiCareSystemDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer(GetConnectionString());
+        => optionsBuilder.UseSqlServer("Data Source=HUUSANG;Initial Catalog=KoiCareSystemDB;Persist Security Info=True;User ID=sa;Password=12345;Trust Server Certificate=True;");
 
-    private string GetConnectionString()
-    {
-        IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
-        return configuration.GetConnectionString("KoiCareSystem");
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountTbl>(entity =>
@@ -310,7 +303,7 @@ public partial class KoiCareSystemDbContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(e => e.TokenId).HasName("PK__refresh___AC16DB470AEAE1D2");
+            entity.HasKey(e => e.TokenId).HasName("PK__refresh___AC16DB47710D42FD");
 
             entity.ToTable("refresh_token");
 
@@ -327,16 +320,16 @@ public partial class KoiCareSystemDbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("issueAt");
             entity.Property(e => e.JwtId)
-                .HasMaxLength(100)
+                .HasColumnType("text")
                 .HasColumnName("jwtId");
             entity.Property(e => e.Token)
-                .HasMaxLength(100)
+                .HasColumnType("text")
                 .HasColumnName("token");
 
             entity.HasOne(d => d.Acc).WithMany(p => p.RefreshTokens)
                 .HasForeignKey(d => d.AccId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__refresh_t__accId__5CD6CB2B");
+                .HasConstraintName("FK__refresh_t__accId__6FE99F9F");
         });
 
         modelBuilder.Entity<ShopsTbl>(entity =>

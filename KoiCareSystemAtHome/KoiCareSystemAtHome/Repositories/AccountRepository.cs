@@ -2,8 +2,6 @@
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System.Numerics;
 
 namespace KoiCareSystemAtHome.Repositories
 {
@@ -55,33 +53,25 @@ namespace KoiCareSystemAtHome.Repositories
             };
             return accountDto;
         }
-
         public async Task<List<AccountTbl>> GetAllAccounts()
         {
-            return await _context.AccountTbls.Where(a => !a.Role.Equals("admin")).ToListAsync();
+            return await _context.AccountTbls.ToListAsync();
         }
-
         public async Task<List<AccountTbl>> GetAllAccountsByRole(string role)
         {
             return await _context.AccountTbls.Where(a => a.Role.Equals(role)).ToListAsync();
         }
-
-
-        public async Task<bool> UpdateProfile(int id, AccountDTO updateInformation)
+        public async Task<bool> UpdateProfile(int id, string name, string image, string phone, string address)
         {
             var account = _context.AccountTbls.FirstOrDefault(acc => acc.AccId == id);
             if (account == null)
             {
                 return false;
             }
-            if (updateInformation == null)
-            {
-                return false;
-            }
-            account.Image = updateInformation.Image;
-            account.Name = updateInformation.Name;
-            account.Address = updateInformation.Address;
-            account.Phone = updateInformation.Phone;
+            account.Image = image;
+            account.Name = name;
+            account.Address = address;
+            account.Phone = phone;
             await _context.SaveChangesAsync();
             return true;
         }
@@ -121,6 +111,13 @@ namespace KoiCareSystemAtHome.Repositories
            await  _context.SaveChangesAsync();
 
            return true;
+        }
+        public async Task<int> GetTotalAccounts()
+        {return await _context.AccountTbls.CountAsync(acc => acc.Status && !acc.Role.Equals("admin"));
+        }
+        public async Task<int> GetTotalAccountsByRole(string role)
+        {
+            return await _context.AccountTbls.CountAsync(acc => acc.Status && acc.Role.Equals(role));
         }
     }
 }

@@ -106,5 +106,26 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
 
+        [HttpGet("Get-All-Order-By-Category")]
+        public async Task<IActionResult> GetOrderByCategory(string category)
+        {
+            var orders = await (from order in _context.OrdersTbls
+                                join orderDetail in _context.OrderDetailsTbls
+                                on order.OrderId equals orderDetail.OrderId
+                                join product in _context.ProductsTbls
+                                on orderDetail.ProductId equals product.ProductId
+                                where product.Category == category
+                                select new OrderDTO
+                                {
+                                    OrderId = order.OrderId,
+                                    Date = order.Date,
+                                    StatusOrder = order.StatusOrder,
+                                    TotalAmount = order.TotalAmount,
+                                }).ToListAsync();
+            if (!orders.Any())
+                return Ok(new { message = "No orders found for the specified category." });
+            return Ok(orders);
+        }
+
     }
 }

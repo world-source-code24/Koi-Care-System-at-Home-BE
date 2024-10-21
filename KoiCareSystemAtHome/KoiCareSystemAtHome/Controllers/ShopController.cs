@@ -24,7 +24,8 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> GetAllShops()
         {
             var shops =  await _shopRepository.GetAllShopsAsync();
-            return Ok(new {success = true, shops = shops});
+            int totalShops = await _shopRepository.GetTotalShops();
+            return Ok(new {success = true, shops = shops, total = totalShops});
         }
 
         [HttpGet("get-byId{shopId}")]

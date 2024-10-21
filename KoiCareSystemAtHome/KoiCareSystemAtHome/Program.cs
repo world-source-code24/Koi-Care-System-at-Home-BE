@@ -44,6 +44,7 @@ builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<AllEnum>();
 
 //Enum
 builder.Services.AddScoped<AllEnum>();
