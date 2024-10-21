@@ -18,8 +18,20 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         Task<List<AccountTbl>> GetAllAccounts();
         Task<List<AccountTbl>> GetAllAccountsByRole(string role);
         Task<bool> VerifyAccount(string email);
+
         //Tinh total Account
         Task<int> GetTotalAccounts();
         Task<int> GetTotalAccountsByRole(string role);
+
+
+
+        // Update role guest va member.
+        Task<bool> UpdateRole(int id, bool check);
+
+
+        //Cac Interface dung cho Admin
+        //Lay toan bo Account
+
+
     }
 }

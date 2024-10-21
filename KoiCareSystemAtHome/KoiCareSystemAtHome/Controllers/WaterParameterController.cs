@@ -45,10 +45,10 @@ namespace KoiCareSystemAtHome.Controllers
             var pond = await _pondRepository.GetByIdAsync(pondId);
             if (pond == null) return BadRequest();
             var currentParam = await _waterParamRepository.GetByPondIdAsync(pondId);
-
+           
             WaterParametersTbl newParam = new WaterParametersTbl();
-
-            if (currentParam == null || currentParam.Date.Date != param.Date.Date)
+            DateTime currentDate = DateTime.Now.Date;
+            if (currentParam == null || currentParam.Date.Date != currentDate)
             {
                 newParam = new WaterParametersTbl
                 {
@@ -82,7 +82,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 newParam = await _waterParamRepository.UpdateParameter(pondId, currentParam, param);
                 await _waterParamRepository.UpdateAsync(newParam);
-                return Ok();
+                return Ok(newParam);
             }
 
             return CreatedAtAction(nameof(GetParam), new { pondId = newParam.PondId }, newParam);

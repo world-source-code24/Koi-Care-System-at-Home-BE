@@ -12,7 +12,15 @@
         public enum StatusPayment
         {
             Paid,
-            Unpaid
+            Unpaid,
+            Refund
+        }
+
+        public enum UserRole
+        {
+            Member,
+            Admin,
+            Guest
         }
     }
 }
