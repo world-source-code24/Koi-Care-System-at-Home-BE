@@ -5,6 +5,7 @@ using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -21,7 +22,7 @@ namespace KoiCareSystemAtHome.Controllers
             _cart = cart;
         }
 
-        [HttpGet("Get-All-Order-Details")]
+        [HttpGet("/api/Get-All-Order-Details")]
         public async Task<ActionResult<IEnumerable<List<OrderDetailsDTO>>>> GetAllOrderDetails(int orderId)
         {
             var orderDetailList = await _context.OrderDetailsTbls
@@ -31,11 +32,12 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(orderDetailList);
         }
 
-        [HttpPut("Add-Order-Details (read-code-note)")]
+        [HttpPut("/api/Add-Order-Details(Read-Code-Note)")]
         public async Task<IActionResult> CreateOrderDetails(int orderID, List<CartDTO> cartDTOs)
 
         // Vi mot li do nao do tren swagger ko nhan list, nhung neu su dung ham
-        //var cartDTOs =await _cart.GetUserCarts(1); thi lai nhan.
+        // Lay cart van se nhan
+
 
         {
             // lAY ORDERID
@@ -56,15 +58,16 @@ namespace KoiCareSystemAtHome.Controllers
             //{
             //    if (cart.AccId != userId) return BadRequest("User cart didn't match user order id");
             //}
-            if (cartDTOs.Count ==0)
-            {
-                return NotFound("The cart is empty");
-            }
-            Console.WriteLine($"Received {cartDTOs.Count} cart items.");
+            //if (cartDTOs.Count ==0)
+            //{
+            //    return NotFound("The cart is empty");
+            //}
+            //Console.WriteLine($"Received {cartDTOs.Count} cart items.");
             //foreach (var cart in cartDTOs)
             //{
             //    Console.WriteLine($"AccId: {cart.AccId}, ProductId: {cart.ProductId}, Quantity: {cart.Quantity}");
             //}
+
             List<OrderDetailsTbl> listOrder = new List<OrderDetailsTbl>();
             foreach (var cart in cartDTOs)
             {
@@ -88,5 +91,32 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { message = "Success", status = true });
         }
 
+        //[HttpPut("Add-Order-Details-Test")]
+        //public async Task<IActionResult> CreateOrderDetailsTest(int orderID)
+        //{
+        //    var oOrder = await _context.OrdersTbls.Where(o => o.OrderId.Equals(orderID)).FirstOrDefaultAsync();
+        //    List<CartDTO> cartDTOs = await _cart.GetUserCarts(oOrder.AccId.Value);
+        //    List<OrderDetailsTbl> listOrder = new List<OrderDetailsTbl>();
+        //    foreach (var cart in cartDTOs)
+        //    {
+        //        OrderDetailsTbl orderDetailsTbl = new OrderDetailsTbl
+        //        {
+        //            OrderId = orderID,
+        //            ProductId = cart.ProductId,
+        //            Quantity = cart.Quantity,
+        //            TotalPrice = _normalFunctions.TotalMoneyOfItem(cart.ProductId, cart.Quantity)
+        //        };
+        //        Console.WriteLine(orderDetailsTbl);
+        //        listOrder.Add(orderDetailsTbl);
+        //    }
+        //    // Nhap sau de tranh bi loi trong qua trinh tranfer cart, order.
+        //    foreach (var order in listOrder)
+        //    {
+        //        _context.OrderDetailsTbls.Add(order);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return Ok(new { message = "Success", status = true });
+        //}
     }
 }

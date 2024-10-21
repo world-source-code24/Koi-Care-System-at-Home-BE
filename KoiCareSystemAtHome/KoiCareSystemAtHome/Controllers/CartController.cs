@@ -24,7 +24,7 @@ namespace KoiCareSystemAtHome.Controllers
             _cartDetailsRepository = cartDetailsRepository;
         }
 
-        [HttpGet("Show-All-Carts")]
+        [HttpGet("/api/Show-All-Carts")]
         public async Task<ActionResult<IEnumerable<CartDTO>>> ShowAllCart ()
         {
             var listCart = await _context.CartTbls.ToListAsync();
@@ -39,7 +39,7 @@ namespace KoiCareSystemAtHome.Controllers
     
         }
 
-        [HttpGet("Show-All-Carts-From-User/{userID}")]
+        [HttpGet("/api/Show-All-Carts-From-User/{userID}")]
         public async Task<ActionResult<IEnumerable<CartDTO>>> ShowAllUserCarts (int userID)
         {
             bool checkUserExist = await _context.AccountTbls.AnyAsync(acc => acc.AccId == userID);
@@ -62,14 +62,14 @@ namespace KoiCareSystemAtHome.Controllers
             }           
         }
 
-        [HttpGet("Get-Single-Cart-From-User/{userID}")]
-        public async Task<ActionResult<CartDTO>> GetCart (int userID, int productID)
-        {
-            var getCart = await _context.CartTbls.FindAsync(userID, productID);
-            return Ok(getCart);
-        }
+        //[HttpGet("Get-Single-Cart-From-User/{userID}")]
+        //public async Task<ActionResult<CartDTO>> GetCart (int userID, int productID)
+        //{
+        //    var getCart = await _context.CartTbls.FindAsync(userID, productID);
+        //    return Ok(getCart);
+        //}
 
-        [HttpGet("Get-Single-Cart-And-Details-From-User/")]
+        [HttpGet("/api/Get-Single-Cart-And-Details-From-User/")]
         public async Task<ActionResult<(CartDTO,CartDetailsDTO)>> GetCartInformation(int userID, int productID)
         {
             var getCart = await _context.CartTbls.FindAsync(userID, productID);
@@ -87,7 +87,7 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { Cart = cartDTO, Details = getCartDetails });
         }
 
-        [HttpGet("Get-All-Cart-And-Details-From-User (For display)")]
+        [HttpGet("/api/Get-All-Cart-And-Details-From-User (For display)")]
         public async Task<ActionResult<List<FullCartDetailDTO>>> GetFullInformation(int userID)
         {
             var cartResult = await _cartRepository.GetUserCarts(userID);      
@@ -118,34 +118,41 @@ namespace KoiCareSystemAtHome.Controllers
 
 
 
-        [HttpPost("Add-Carts-For-User/{userID}")]
-        public async Task<ActionResult<CartDTO>> AddCart(int userID, CartDTO cartAdd)
+        [HttpPost("/api/Add-Carts-For-User/")]
+        public async Task<ActionResult<CartDTO>> AddCart(CartDTO cartAdd)
         {
+            // Validate model state
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            // Check stock availability and process the order
             var (isStockAvailable, stockMessage) = await _cartRepository.CheckStockAndProcessOrder(cartAdd.ProductId, cartAdd.Quantity);
             if (!isStockAvailable)
             {
                 return BadRequest(new { status = false, message = stockMessage });
             }
+
+            // Create a new cart entity
             var cartTbl = new CartTbl
             {
                 ProductId = cartAdd.ProductId,
-                AccId = userID,
+                AccId = cartAdd.AccId,
                 Quantity = cartAdd.Quantity
             };
 
+            // Add the new cart to the database
             _context.CartTbls.Add(cartTbl);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCart), new { status = true, message = "Cart added successfully" }, cartTbl);
+            // Return created response with details about the newly added cart
+            return CreatedAtAction(nameof(AddCart), new { status = true, message = "Cart added successfully" }, cartTbl);
         }
 
 
-        [HttpPut ("Update-Cart-Quantity")]
+
+        [HttpPut ("/api/Update-Cart-Quantity")]
         public async Task<ActionResult<CartDTO>> UpdateCart (CartDTO cartUpdate)
         {
             var oldCart = await _context.CartTbls
@@ -168,7 +175,7 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        [HttpDelete("Delete-Items")]
+        [HttpDelete("/api/Delete-Items")]
         public async Task<IActionResult> DeleteCart (int userID, int deletePoductID)
         {
             var cart = await _context.CartTbls.Where(c => c.AccId == userID && c.ProductId == deletePoductID).FirstOrDefaultAsync();
@@ -184,19 +191,19 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        //[HttpDelete("Delete-All-User-Carts")]
-        //public async Task<IActionResult> DeleteAllUserCarts (int userID)
-        //{
-        //    var check = _cartRepository.DeleteAllCart;
-        //    if (!check)
-        //    {
-        //        return NotFound("User cart is empty or not found");
-        //    }
-        //    else
-        //    {                
-        //        await _context.SaveChangesAsync();
-        //        return Ok(new { status = true, message = "Payment" });
-        //    }
-        //}
+        [HttpDelete("/api/Delete-All-User-Carts")]
+        public async Task<IActionResult> DeleteAllUserCarts(int userID)
+        {
+            bool check =await _cartRepository.DeleteAllCart(userID);
+            if (!check)
+            {
+                return NotFound("User cart is empty or not found");
+            }
+            else
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { status = true, message = "Payment" });
+            }
+        }
     }
 }

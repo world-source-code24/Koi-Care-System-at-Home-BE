@@ -13,16 +13,18 @@ namespace KoiCareSystemAtHome.Controllers
         private readonly INormalFunctionsRepository _normalFunctionsRepository;
         private readonly ICartRepository _cartRepository;
         private readonly AllEnum _aenum;
+        private readonly IOrderRepository _orderRepository;
 
-        public OrderController(KoiCareSystemDbContext context, INormalFunctionsRepository normalFunctionsRepository, ICartRepository cartRepository, AllEnum aenum)
+        public OrderController(KoiCareSystemDbContext context, INormalFunctionsRepository normalFunctionsRepository, ICartRepository cartRepository, AllEnum aenum, IOrderRepository orderRepository)
         {
             _context = context;
             _normalFunctionsRepository = normalFunctionsRepository;
             _cartRepository = cartRepository;
             _aenum = aenum;
+            _orderRepository = orderRepository;
         }
 
-        [HttpGet("Get-Order")]
+        [HttpGet("/api/Get-Order")]
         public async Task<ActionResult<IEnumerable<OrderDTO>>> GetOrder(int id)
         {
             var order = await _context.OrdersTbls.FindAsync(id);
@@ -52,7 +54,8 @@ namespace KoiCareSystemAtHome.Controllers
         //    return Ok(new { status = true, message = "Add order" });
         //}
 
-        [HttpPost("Create-Order-And-Calculate-Money")]
+
+        [HttpPost("/api/Create-Order-And-Calculate-Money")]
         public async Task<IActionResult> CreateOrderAndMoney(int accID)
         {
             try
@@ -77,7 +80,7 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        [HttpPut("Update-Status-Payment")]
+        [HttpPut("/api/Update-Status-Payment")]
         public async Task<IActionResult> UpdatePaidSuccess(int accID, int orderID)
         {
             var order = await _context.OrdersTbls
@@ -89,7 +92,7 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { status = true, message = "Payment status updated to Paid." });
         }
 
-        [HttpPut("Update-Status-Payment-Latest")]
+        [HttpPut("/api/Update-Status-Payment-Latest")]
         public async Task<IActionResult> UpdatePaidSuccessLatest(int accID, int orderID)
         {
             var order = await _context.OrdersTbls
@@ -101,5 +104,7 @@ namespace KoiCareSystemAtHome.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { status = true, message = "Payment status updated to Paid." });
         }
+
+
     }
 }
