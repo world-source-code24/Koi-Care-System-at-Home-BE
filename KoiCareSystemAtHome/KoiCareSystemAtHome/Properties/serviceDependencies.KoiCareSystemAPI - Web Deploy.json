@@ -3,7 +3,7 @@
     "mssql1": {
       "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/KoiCareSystemAPI/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsKoiCareSystem_A37E49E68A",
       "secretStore": "AzureAppSettings",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/koicaresever/databases/KoiCareSystemAtHomeDB",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/koicaresever/databases/koicareathome",
       "type": "mssql.azure",
       "connectionId": "ConnectionStrings:KoiCareSystem",
       "dynamicId": null

@@ -75,6 +75,25 @@ namespace KoiCareSystemAtHome.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+
+        public async Task<bool> UpdateRole(int id, bool check)
+        {
+            var getProfile =await GetAccountProfile(id);
+            if (check)
+            {
+                getProfile.Role = AllEnum.UserRole.Member.ToString();
+                return true;
+            }
+            else
+            {
+               getProfile.Role= AllEnum.UserRole.Guest.ToString();
+                return false;
+            }
+
+        }
+
+
         public async Task<bool> VerifyAccount(string email)
         {
 
@@ -88,9 +107,10 @@ namespace KoiCareSystemAtHome.Repositories
                 return false;
             }
 
-            account.Status = true;
+           account.Status = true;
+           await  _context.SaveChangesAsync();
 
-            return true;
+           return true;
         }
         public async Task<int> GetTotalAccounts()
         {return await _context.AccountTbls.CountAsync(acc => acc.Status && !acc.Role.Equals("admin"));

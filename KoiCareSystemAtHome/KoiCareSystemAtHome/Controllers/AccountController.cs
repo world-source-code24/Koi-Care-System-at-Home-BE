@@ -1,8 +1,9 @@
-﻿using KoiCareSystemAtHome.Entities;
+﻿ using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -54,8 +55,10 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> GetAllAccounts()
         {
             var accs = await _accountRepository.GetAllAccounts();
+
             int totalAccounts = await _accountRepository.GetTotalAccounts();
             return Ok(new {success = true, accs = accs, total = totalAccounts});
+
         }
 
         //Get all by role
@@ -64,13 +67,17 @@ namespace KoiCareSystemAtHome.Controllers
         {
             try
             {
+
                 if (role == null)
+
                 {
-                    return BadRequest("Role should by provided!!");
-                }
-                var accs = await _accountRepository.GetAllAccountsByRole(role);
+                     var accs = await _accountRepository.GetAllAccountsByRole(role);
                 int totalAccounts = await _accountRepository.GetTotalAccountsByRole(role);
                 return Ok(new { accs = accs, total = totalAccounts });
+                }
+
+                return BadRequest("No accounts available!!");
+
             }
             catch (Exception ex)
             {

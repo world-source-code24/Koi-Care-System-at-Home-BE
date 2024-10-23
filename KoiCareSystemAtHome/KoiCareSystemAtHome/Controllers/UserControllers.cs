@@ -14,6 +14,7 @@ using System.Net.Mail;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 
+
 namespace KoiCareSystemAtHome.Controllers
 {
     [Route("api/[controller]")]
@@ -95,8 +96,6 @@ namespace KoiCareSystemAtHome.Controllers
                 Status = false,
             };
             await _accountRepository.AddAsync(newAccount);
-            await _context.SaveChangesAsync();
-
             return Ok(new { Success = true, Message = "Account registered successfully. Please check your email to verify your account." });
         }
 
@@ -150,15 +149,18 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPut]
         public async Task<IActionResult> verifyAccount(int userCode, int verifyCode, string email)
         {
-
-            if (userCode == verifyCode)
+            var acc = await _context.AccountTbls.FirstOrDefaultAsync(acc => acc.Email == email);
+            if (acc != null)
             {
-                bool success = await _accountRepository.VerifyAccount(email);
-                if (success)
+                if (userCode == verifyCode)
                 {
-                    _context.SaveChanges();
-
+                    acc.Status = true;
+                    await _context.SaveChangesAsync();
                     return Ok(new { success = true });
+                }
+                else
+                {
+                    await _accountRepository.DeleteAsync(acc.AccId);
                 }
             }
             return BadRequest();
