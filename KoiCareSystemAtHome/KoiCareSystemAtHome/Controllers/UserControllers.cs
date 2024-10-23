@@ -11,6 +11,7 @@ using System.Text;
 using MimeKit;
 using System.Diagnostics;
 using System.Net.Mail;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 
 namespace KoiCareSystemAtHome.Controllers
