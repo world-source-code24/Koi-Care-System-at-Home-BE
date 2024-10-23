@@ -7,7 +7,9 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
     {
         //Get product
         Task<CartDetailsDTO> GetProductInfo(int productId);
+        Task<CartDetailsDTO> GetCardDetails(int productId, int quantity);
 
-     
+
+
     }
 }

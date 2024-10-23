@@ -2,8 +2,10 @@
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
 using KoiCareSystemAtHome.Repositories.IRepositories;
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -24,6 +26,7 @@ namespace KoiCareSystemAtHome.Controllers
             _orderRepository = orderRepository;
         }
 
+
         [HttpGet("/api/Get-All-User-Order")]
         public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAllOrder(int userId)
         {
@@ -36,6 +39,18 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return Ok(new { message = "success", status = true, order });
             }
+        }
+
+        [HttpGet("GetAll/{accId}")]
+        public async Task<IActionResult> GetOrdersByAccId(int accId)
+        {
+            var orders = await _orderRepository.GetOrdersByAccId(accId);
+            if (orders.IsNullOrEmpty())
+            {
+                return NotFound("No orders available!!");
+            }
+            return Ok(new {success =  true, orders = orders});
+
         }
 
         [HttpGet("/api/Get-Order")]
@@ -76,6 +91,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 var totalCart = await _cartRepository.GetUserCarts(accID);
                 var totalAmount = await _normalFunctionsRepository.TotalMoneyOfCarts(totalCart);
+                
                 var order = new OrdersTbl
                 {
                     AccId = accID,
@@ -83,14 +99,28 @@ namespace KoiCareSystemAtHome.Controllers
                     StatusOrder = AllEnum.OrderStatus.Pending.ToString(),
                     StatusPayment = AllEnum.StatusPayment.Unpaid.ToString(),
                     TotalAmount = totalAmount
+
                 };
                 _context.OrdersTbls.Add(order);
                 await _context.SaveChangesAsync();
-                return Ok(new { status = true, message = "Add order" });
+                foreach (var item in totalCart)
+                {
+                    var product = await _context.ProductsTbls.FindAsync(item.ProductId);
+                    var orderDetails = new OrderDetailsTbl
+                    {
+                        OrderId = order.OrderId,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        TotalPrice = item.Quantity * product.Price
+                    };
+                    _context.OrderDetailsTbls.Add(orderDetails);
+                }
+                await _context.SaveChangesAsync();
+                return Ok(new { status = true, orderId = order.OrderId });
             }
-            catch (NullReferenceException n)
+            catch (Exception n)
             {
-                return BadRequest(n);
+                return BadRequest(n.Message);
             }
         }
 
@@ -119,6 +149,27 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { status = true, message = "Payment status updated to Paid." });
         }
 
+
+        [HttpGet("Get-All-Order-By-Category")]
+        public async Task<IActionResult> GetOrderByCategory(string category)
+        {
+            var orders = await (from order in _context.OrdersTbls
+                                join orderDetail in _context.OrderDetailsTbls
+                                on order.OrderId equals orderDetail.OrderId
+                                join product in _context.ProductsTbls
+                                on orderDetail.ProductId equals product.ProductId
+                                where product.Category == category
+                                select new OrderDTO
+                                {
+                                    OrderId = order.OrderId,
+                                    Date = order.Date,
+                                    StatusOrder = order.StatusOrder,
+                                    TotalAmount = order.TotalAmount,
+                                }).ToListAsync();
+            if (!orders.Any())
+                return Ok(new { message = "No orders found for the specified category." });
+            return Ok(orders);
+        }
 
     }
 }

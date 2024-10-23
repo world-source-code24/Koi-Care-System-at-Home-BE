@@ -1,4 +1,6 @@
-﻿using KoiCareSystemAtHome.Models;
+﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Models;
+using System.Threading.Tasks;
 
 namespace KoiCareSystemAtHome.Repositories.IRepositories
 {
@@ -8,5 +10,7 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
 
         Task<(bool,int)> CreateOrder(int id);
         //List<OrderDTO> GetListOrder (int id);
+
+        Task<List<OrdersTbl>> GetOrdersByAccId(int accId);
     }
 }

@@ -62,7 +62,6 @@ namespace KoiCareSystemAtHome.Controllers
             }
 
         }
-
         [HttpGet("get-byName{name}")]
         public async Task<IActionResult> GetProductByName(string name)
         {
@@ -132,7 +131,7 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         //Set the status of product. Delete product means status = false.
-        [HttpDelete("edit-status{productId}")]
+        [HttpPut("edit-status{productId}")]
         public async Task<IActionResult> EditStatusProduct(int productId, bool status)
         {
             try

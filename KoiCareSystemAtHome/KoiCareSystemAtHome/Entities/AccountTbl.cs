@@ -25,9 +25,11 @@ public partial class AccountTbl
 
     public DateOnly? EndDate { get; set; }
 
-    public bool Status { get; set; } = true;
+    public bool Status { get; set; }
 
     public virtual ICollection<CartTbl> CartTbls { get; set; } = new List<CartTbl>();
+
+    public virtual ICollection<MembershipDashboard> MembershipDashboards { get; set; } = new List<MembershipDashboard>();
 
     public virtual ICollection<NotesTbl> NotesTbls { get; set; } = new List<NotesTbl>();
 

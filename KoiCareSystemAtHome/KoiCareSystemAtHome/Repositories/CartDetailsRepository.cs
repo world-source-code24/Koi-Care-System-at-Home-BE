@@ -28,5 +28,18 @@ namespace KoiCareSystemAtHome.Repositories
             };
             return cartDetails;
         }
+        public async Task<CartDetailsDTO> GetCardDetails(int productId, int quantity)
+        {
+            var product = await _context.ProductsTbls.FindAsync(productId);
+            //if (product == null) return null;
+            var cartDetails = new CartDetailsDTO
+            {
+                Price = product.Price * quantity,
+                ProductName = product.Name,
+                Quantity = product.Stock,
+                Category = product.Category,
+            };
+            return cartDetails;
+        }
     }
 }

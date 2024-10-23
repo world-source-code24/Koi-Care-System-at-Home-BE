@@ -20,7 +20,7 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpGet("/api/Show-All-Ponds")]
-        public async Task<ActionResult<IEnumerable<PondDTO>>> GetPonds()
+        public async Task<IActionResult> GetPonds()
         {
             // Retrieve the list of ponds from the database
             List<PondsTbl> listPond = await _context.PondsTbls.ToListAsync();
@@ -50,7 +50,7 @@ namespace KoiCareSystemAtHome.Controllers
 
         //Show all list of user Ponds
         [HttpGet("/api/Show-All-Ponds-UserID/{AccId}")]
-        public async Task<ActionResult<IEnumerable<PondDTO>>> GetUserPonds(int AccId)
+        public async Task<IActionResult> GetUserPonds(int AccId)
         {
             List<PondsTbl> listPond = await _context.PondsTbls.Where(p => p.AccId == AccId).ToListAsync();
             if (listPond.Count == 0)

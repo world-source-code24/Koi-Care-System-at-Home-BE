@@ -55,6 +55,11 @@ namespace KoiCareSystemAtHome.Repositories
             }
         }
 
+        public async Task<List<OrdersTbl>> GetOrdersByAccId(int accId)
+        {
+            return await _context.OrdersTbls.Where(o => o.AccId == accId).ToListAsync();
+        }
+
         public async Task<(bool, int)> CreateOrder(int id)
         {
             try

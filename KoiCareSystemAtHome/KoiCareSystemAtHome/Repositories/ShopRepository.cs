@@ -32,5 +32,10 @@ namespace KoiCareSystemAtHome.Repositories
                 Phone = s.Phone,
             }).SingleOrDefaultAsync();
         }
+
+        public async Task<int> GetTotalShops()
+        {
+            return await _context.ShopsTbls.CountAsync();
+        }
     }
 }
