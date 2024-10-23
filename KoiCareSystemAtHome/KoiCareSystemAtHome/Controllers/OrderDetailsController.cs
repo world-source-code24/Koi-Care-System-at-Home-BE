@@ -32,7 +32,7 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(orderDetailList);
         }
 
-        [HttpPut("/api/Add-Order-Details(Read-Code-Note)")]
+        [HttpPut("/api/Add-Order-Details")]
         public async Task<IActionResult> CreateOrderDetails(int orderID, List<CartDTO> cartDTOs)
 
         // Vi mot li do nao do tren swagger ko nhan list, nhung neu su dung ham
@@ -88,7 +88,7 @@ namespace KoiCareSystemAtHome.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Success", status = true });
+            return Ok(new { message = "Success", status = true , listOrder });
         }
 
         //[HttpPut("Add-Order-Details-Test")]

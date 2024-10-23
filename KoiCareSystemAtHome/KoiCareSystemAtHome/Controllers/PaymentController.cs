@@ -27,7 +27,7 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpPut("/api/Payment")]
-        public async Task<IActionResult> TotalWhatHappenWhenPayment(int userID)
+        public async Task<IActionResult> Payment(int userID)
         {
             // Start a database transaction
             await using var transaction = await _context.Database.BeginTransactionAsync();
@@ -75,9 +75,9 @@ namespace KoiCareSystemAtHome.Controllers
             var order = await _context.OrdersTbls.Where(o => o.OrderId == orderID).FirstOrDefaultAsync();
             PaymentInformationModel model = new PaymentInformationModel
             {
-                Amount = order.TotalAmount.Value,
+                Amount = (float)order.TotalAmount.Value,
                 Name = orderID.ToString(),
-                OrderDescription = "KoiItem",
+                OrderDescription = "KoiItem",   
                 OrderType = "Item"
 
             };

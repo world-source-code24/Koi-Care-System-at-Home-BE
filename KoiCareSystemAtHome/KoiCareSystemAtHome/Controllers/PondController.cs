@@ -5,6 +5,7 @@ using KoiCareSystemAtHome.Entities;
 using System.Threading.Tasks;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using System.Linq;
+using System.Text;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -21,8 +22,29 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpGet("/api/Show-All-Ponds")]
         public async Task<IActionResult> GetPonds()
         {
+            // Retrieve the list of ponds from the database
             List<PondsTbl> listPond = await _context.PondsTbls.ToListAsync();
-            return Ok(new { Message = "Success \n", listPond });
+
+            // Check if the list is empty
+            if (listPond == null || !listPond.Any())
+            {
+                return NotFound(new { success = false, message = "No ponds found." });
+            }
+
+            // Map PondsTbl to PondDTO
+            var pondDtos = listPond.Select(p => new PondDTO(
+                p.PondId,
+                p.Name,
+                p.Image, // Assuming PondsTbl has an Image property
+                p.Depth,
+                p.Volume,
+                p.DrainCount,
+                p.PumpCapacity,
+                p.AccId // Assuming AccId is the UserId
+            )).ToList();
+
+            // Return the result with a success message
+            return Ok(new { success = true, listPond = pondDtos });
         }
 
 
@@ -38,10 +60,10 @@ namespace KoiCareSystemAtHome.Controllers
 
 
         // GET: User for when user choose a specific pond
-        [HttpGet("/api/Show-Specific-Pond/{id} ")]
+        [HttpGet("/api/Show-Specific-Pond/{id}")]
         public async Task<ActionResult<PondDTO>> GetPond(int id)
         {
-            var pond = await _context.PondsTbls.FindAsync(id);
+            var pond = await _context.PondsTbls.Where(p => p.PondId == id).FirstOrDefaultAsync();
             if (pond == null)
             {
                 return NotFound(new { status = "Fail", message = "This pond didn't exist" });
@@ -82,7 +104,7 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPut("/api/Update-Pond/{id}")]
         public async Task<IActionResult> UpdatePond(int id, PondDTO pondDto)
         {
-            var pond = await _context.PondsTbls.FindAsync(id);
+            var pond = await _context.PondsTbls.Where(p => p.PondId == id).FirstOrDefaultAsync();
             if (pond == null) return BadRequest("Pond not found.");
 
             pond.Name = pondDto.Name;
@@ -118,7 +140,7 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpDelete("/api/Delete-Pond/{id}")]
         public async Task<IActionResult> DeletePond(int id)
         {
-            var pond = await _context.PondsTbls.FindAsync(id);
+            var pond = await _context.PondsTbls.Where(p => p.PondId == id).FirstOrDefaultAsync();
             if (pond == null)
             {
                 return NotFound(new {message = "This pond didn't exist"});
