@@ -71,7 +71,7 @@ namespace KoiCareSystemAtHome.Controllers
                 {
                     var accs = await _accountRepository.GetAllAccountsByRole(role);
                     int totalAccounts = await _accountRepository.GetTotalAccountsByRole(role);
-                    return Ok(new { accs = accs, total = totalAccounts });
+                    return Ok(new { accList = accs, total = totalAccounts });
                 }
                 return BadRequest("No accounts available!!");
             }
