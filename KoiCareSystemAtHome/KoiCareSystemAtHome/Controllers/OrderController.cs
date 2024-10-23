@@ -2,8 +2,10 @@
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
 using KoiCareSystemAtHome.Repositories.IRepositories;
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KoiCareSystemAtHome.Controllers
 {
@@ -22,6 +24,17 @@ namespace KoiCareSystemAtHome.Controllers
             _cartRepository = cartRepository;
             _aenum = aenum;
             _orderRepository = orderRepository;
+        }
+
+        [HttpGet("GetAll/{accId}")]
+        public async Task<IActionResult> GetOrdersByAccId(int accId)
+        {
+            var orders = await _orderRepository.GetOrdersByAccId(accId);
+            if (orders.IsNullOrEmpty())
+            {
+                return NotFound("No orders available!!");
+            }
+            return Ok(new {success =  true, orders = orders});
         }
 
         [HttpGet("/api/Get-Order")]
@@ -62,6 +75,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 var totalCart = await _cartRepository.GetUserCarts(accID);
                 var totalAmount = await _normalFunctionsRepository.TotalMoneyOfCarts(totalCart);
+                
                 var order = new OrdersTbl
                 {
                     AccId = accID,
@@ -69,14 +83,28 @@ namespace KoiCareSystemAtHome.Controllers
                     StatusOrder = AllEnum.OrderStatus.Pending.ToString(),
                     StatusPayment = AllEnum.StatusPayment.Unpaid.ToString(),
                     TotalAmount = totalAmount
+
                 };
                 _context.OrdersTbls.Add(order);
                 await _context.SaveChangesAsync();
-                return Ok(new { status = true, message = "Add order" });
+                foreach (var item in totalCart)
+                {
+                    var product = await _context.ProductsTbls.FindAsync(item.ProductId);
+                    var orderDetails = new OrderDetailsTbl
+                    {
+                        OrderId = order.OrderId,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        TotalPrice = item.Quantity * product.Price
+                    };
+                    _context.OrderDetailsTbls.Add(orderDetails);
+                }
+                await _context.SaveChangesAsync();
+                return Ok(new { status = true, orderId = order.OrderId });
             }
-            catch (NullReferenceException n)
+            catch (Exception n)
             {
-                return BadRequest(n);
+                return BadRequest(n.Message);
             }
         }
 

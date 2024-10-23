@@ -50,14 +50,8 @@ namespace KoiCareSystemAtHome.Controllers
             else
             {
                 var listUserCart = await _context.CartTbls.Where(cart => cart.AccId == userID).ToListAsync();
-                if (listUserCart.Count == 0)
-                {
-                    return NotFound("Cart is empty");
-                }
-                else
-                {
+               
                     return Ok(new { message = "success", listUserCart });
-                }
                
             }           
         }
@@ -103,7 +97,7 @@ namespace KoiCareSystemAtHome.Controllers
                     Quantity = cart.Quantity
                 };
 
-                var cartDetail = await _cartDetailsRepository.GetProductInfo(cart.ProductId);
+                var cartDetail = await _cartDetailsRepository.GetCardDetails(cart.ProductId, cart.Quantity);
                 if (cartDetail != null)
                 {
                     fullCartDetailsList.Add(new FullCartDetailDTO

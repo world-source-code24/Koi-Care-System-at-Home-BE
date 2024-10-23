@@ -1,9 +1,10 @@
-﻿using KoiCareSystemAtHome.Models;
+﻿using KoiCareSystemAtHome.Entities;
+using KoiCareSystemAtHome.Models;
 
 namespace KoiCareSystemAtHome.Repositories.IRepositories
 {
-    public interface INoteRepository
+    public interface INoteRepository : IGenericRepository<NotesTbl>
     {
-        Task<List<NoteDTO>> GetListNote(int accId);
+        Task<List<NotesTbl>> GetListNote(int accId);
     }
 }

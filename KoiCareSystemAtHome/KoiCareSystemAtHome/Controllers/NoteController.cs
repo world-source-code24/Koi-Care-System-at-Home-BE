@@ -1,6 +1,7 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories;
+using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,8 +12,8 @@ namespace KoiCareSystemAtHome.Controllers
     public class NoteController : ControllerBase
     {
         private readonly KoiCareSystemDbContext _context;
-        private readonly NoteRepository _noteRepository;
-        public NoteController (KoiCareSystemDbContext context, NoteRepository noteRepository)
+        private readonly INoteRepository _noteRepository;
+        public NoteController (KoiCareSystemDbContext context, INoteRepository noteRepository)
         {
             _context = context;
             _noteRepository = noteRepository;
@@ -28,14 +29,23 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateNote(NoteDTO note, int accId)
         {
-            var newKoi = new NotesTbl
+            try
             {
-                AccId = accId,
-                NoteName = note.NoteName,
-                NoteText = note.NoteText,
-            };
-            await _noteRepository.AddAsync(newKoi);
-            return Ok(new {Success = true, Message = "Add Note Successful!"});
+                var newKoi = new NotesTbl
+                {
+                    AccId = accId,
+                    NoteName = note.NoteName,
+                    NoteText = note.NoteText,
+                };
+                await _noteRepository.AddAsync(newKoi);
+                
+                return Ok(new { Success = true, noteId = newKoi.NoteId});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPut]

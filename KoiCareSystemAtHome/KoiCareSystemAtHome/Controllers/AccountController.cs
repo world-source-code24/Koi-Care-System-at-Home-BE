@@ -120,13 +120,13 @@ namespace KoiCareSystemAtHome.Controllers
                 }
                 acc.Role = "member";
                 acc.StartDate = DateOnly.FromDateTime(DateTime.Now);
-                var cartTbl = new CartTbl
-                {
-                    ProductId = 1002,
-                    AccId = accId,
-                    Quantity = 1
-                };
-                _context.CartTbls.Add(cartTbl);
+                //var cartTbl = new CartTbl
+                //{
+                //    ProductId = 1002,
+                //    AccId = accId,
+                //    Quantity = 1
+                //};
+                //_context.CartTbls.Add(cartTbl);
                 await _accountRepository.UpdateAsync(acc);
                 await _context.SaveChangesAsync();
                 return Ok(new { success = true, message = "Update successfully!!"});
@@ -136,6 +136,28 @@ namespace KoiCareSystemAtHome.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("edit-role/{accId}")]
+        public async Task<IActionResult> EditRole(int accId, string role)
+        {
+            try
+            {
+                var acc = await _accountRepository.GetByIdAsync(accId);
+                if (acc == null)
+                {
+                    return NotFound("No account available");
+                }
+                acc.Role = role;
+                await _accountRepository.UpdateAsync(acc);
+                await _context.SaveChangesAsync();
+                return Ok(new { success = true, message = "Update successfully!!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         //Changing password
         [HttpPut("change-password{accId}")]
         public async Task<IActionResult> ChangePassword(int accId, string changePassword, string confirmedPassword)

@@ -12,12 +12,13 @@ namespace KoiCareSystemAtHome.Repositories
         {
             _context = context;
         }
-        public async Task<List<NoteDTO>> GetListNote(int accId)
+        public async Task<List<NotesTbl>> GetListNote(int accId)
         {
             var NoteList = await _context.NotesTbls
                 .Where(note => note.AccId == accId)
-                .Select(note => new NoteDTO
+                .Select(note => new NotesTbl
                 {
+                    NoteId = note.NoteId,
                     NoteName = note.NoteName,
                     NoteText = note.NoteText,
                 })
