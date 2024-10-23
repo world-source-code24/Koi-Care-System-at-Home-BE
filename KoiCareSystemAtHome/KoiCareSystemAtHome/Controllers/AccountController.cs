@@ -111,6 +111,10 @@ namespace KoiCareSystemAtHome.Controllers
                 {
                     return NotFound("No account available!!");
                 }
+                if(acc.Role == "member")
+                {
+                    return BadRequest(new { message = "Your account is member now!" });
+                }
                 acc.Role = "member";
                 acc.StartDate = DateOnly.FromDateTime(DateTime.Now);
                 var cartTbl = new CartTbl
