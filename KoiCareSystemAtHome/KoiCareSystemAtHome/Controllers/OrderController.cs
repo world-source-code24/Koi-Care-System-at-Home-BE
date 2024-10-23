@@ -24,10 +24,24 @@ namespace KoiCareSystemAtHome.Controllers
             _orderRepository = orderRepository;
         }
 
-        [HttpGet("/api/Get-Order")]
-        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetOrder(int id)
+        [HttpGet("/api/Get-All-User-Order")]
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAllOrder(int userId)
         {
-            var order = await _context.OrdersTbls.FindAsync(id);
+            var order = await _context.OrdersTbls.Where(o => o.AccId == userId).ToListAsync();
+            if (order == null)
+            {
+                return NotFound("Not found order");
+            }
+            else
+            {
+                return Ok(new { message = "success", status = true, order });
+            }
+        }
+
+        [HttpGet("/api/Get-Order")]
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetOrder(int orderId)
+        {
+            var order = await _context.OrdersTbls.Where(o => o.OrderId == orderId).FirstOrDefaultAsync();
             if (order == null)
             {
                 return NotFound("Not found order");

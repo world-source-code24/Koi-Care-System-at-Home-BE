@@ -27,7 +27,7 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpPut("/api/Payment")]
-        public async Task<IActionResult> TotalWhatHappenWhenPayment(int userID)
+        public async Task<IActionResult> Payment(int userID)
         {
             // Start a database transaction
             await using var transaction = await _context.Database.BeginTransactionAsync();
