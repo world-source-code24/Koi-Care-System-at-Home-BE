@@ -1,4 +1,4 @@
-﻿ using KoiCareSystemAtHome.Entities;
+﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Http;
@@ -57,7 +57,7 @@ namespace KoiCareSystemAtHome.Controllers
             var accs = await _accountRepository.GetAllAccounts();
 
             int totalAccounts = await _accountRepository.GetTotalAccounts();
-            return Ok(new {success = true, accs = accs, total = totalAccounts});
+            return Ok(new { success = true, accs = accs, total = totalAccounts });
 
         }
 
@@ -67,17 +67,13 @@ namespace KoiCareSystemAtHome.Controllers
         {
             try
             {
-
-                if (role == null)
-
+                if (role != null)
                 {
-                     var accs = await _accountRepository.GetAllAccountsByRole(role);
-                int totalAccounts = await _accountRepository.GetTotalAccountsByRole(role);
-                return Ok(new { accs = accs, total = totalAccounts });
+                    var accs = await _accountRepository.GetAllAccountsByRole(role);
+                    int totalAccounts = await _accountRepository.GetTotalAccountsByRole(role);
+                    return Ok(new { accs = accs, total = totalAccounts });
                 }
-
                 return BadRequest("No accounts available!!");
-
             }
             catch (Exception ex)
             {
@@ -99,7 +95,7 @@ namespace KoiCareSystemAtHome.Controllers
                 }
                 acc.Status = status;
                 await _accountRepository.UpdateAsync(acc);
-                return Ok(new {success = true, message = "The status is set to " + status});
+                return Ok(new { success = true, message = "The status is set to " + status });
             }
             catch (Exception ex)
             {
@@ -129,7 +125,7 @@ namespace KoiCareSystemAtHome.Controllers
                 _context.CartTbls.Add(cartTbl);
                 await _accountRepository.UpdateAsync(acc);
                 await _context.SaveChangesAsync();
-                return Ok(new { success = true, message = "Update successfully!!"});
+                return Ok(new { success = true, message = "Update successfully!!" });
             }
             catch (Exception ex)
             {
@@ -147,7 +143,7 @@ namespace KoiCareSystemAtHome.Controllers
                 {
                     return NotFound("No account available!!");
                 }
-                if(acc.Password == confirmedPassword)
+                if (acc.Password == confirmedPassword)
                 {
                     acc.Password = changePassword;
                 }
