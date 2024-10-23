@@ -59,7 +59,7 @@ namespace KoiCareSystemAtHome.Repositories
         }
         public async Task<List<AccountTbl>> GetAllAccountsByRole(string role)
         {
-            return await _context.AccountTbls.Where(a => a.Role.Equals(role)).ToListAsync();
+            return await _context.AccountTbls.Where(a => a.Role.ToLower().Equals(role.ToLower())).ToListAsync();
         }
         public async Task<bool> UpdateProfile(int id, string name, string image, string phone, string address)
         {

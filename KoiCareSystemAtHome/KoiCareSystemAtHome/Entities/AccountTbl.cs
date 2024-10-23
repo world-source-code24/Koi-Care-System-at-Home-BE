@@ -29,6 +29,8 @@ public partial class AccountTbl
 
     public virtual ICollection<CartTbl> CartTbls { get; set; } = new List<CartTbl>();
 
+    public virtual ICollection<MembershipDashboard> MembershipDashboards { get; set; } = new List<MembershipDashboard>();
+
     public virtual ICollection<NotesTbl> NotesTbls { get; set; } = new List<NotesTbl>();
 
     public virtual ICollection<OrdersTbl> OrdersTbls { get; set; } = new List<OrdersTbl>();

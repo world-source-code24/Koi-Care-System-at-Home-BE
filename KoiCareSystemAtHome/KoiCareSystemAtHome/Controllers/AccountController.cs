@@ -67,8 +67,7 @@ namespace KoiCareSystemAtHome.Controllers
         {
             try
             {
-
-                if (role == null)
+                if (role != null)
 
                 {
                      var accs = await _accountRepository.GetAllAccountsByRole(role);
