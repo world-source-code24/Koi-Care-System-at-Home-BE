@@ -19,11 +19,11 @@ namespace KoiCareSystemAtHome.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly TokenProvider _tokenProvider;
         private readonly IConfiguration _configuration;
         private readonly IAccountRepository _accountRepository;
-        public UserController(KoiCareSystemDbContext context, TokenProvider tokenProvider, IConfiguration configuration, IAccountRepository accountRepository)
+        public UserController(KoicareathomeContext context, TokenProvider tokenProvider, IConfiguration configuration, IAccountRepository accountRepository)
         {
             _context = context;
             _tokenProvider = tokenProvider;

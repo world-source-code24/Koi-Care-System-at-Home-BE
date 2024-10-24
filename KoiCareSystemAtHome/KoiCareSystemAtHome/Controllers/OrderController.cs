@@ -11,13 +11,13 @@ namespace KoiCareSystemAtHome.Controllers
 {
     public class OrderController : ControllerBase
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly INormalFunctionsRepository _normalFunctionsRepository;
         private readonly ICartRepository _cartRepository;
         private readonly AllEnum _aenum;
         private readonly IOrderRepository _orderRepository;
 
-        public OrderController(KoiCareSystemDbContext context, INormalFunctionsRepository normalFunctionsRepository, ICartRepository cartRepository, AllEnum aenum, IOrderRepository orderRepository)
+        public OrderController(KoicareathomeContext context, INormalFunctionsRepository normalFunctionsRepository, ICartRepository cartRepository, AllEnum aenum, IOrderRepository orderRepository)
         {
             _context = context;
             _normalFunctionsRepository = normalFunctionsRepository;

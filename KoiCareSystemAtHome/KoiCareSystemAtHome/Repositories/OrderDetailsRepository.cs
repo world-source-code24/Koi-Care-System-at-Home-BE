@@ -7,12 +7,12 @@ namespace KoiCareSystemAtHome.Repositories
 {
     public class OrderDetailsRepository : IOrderDetailsRepository
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly ICartRepository _cartRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly INormalFunctionsRepository _normalFunctionsRepository;
 
-        public OrderDetailsRepository(KoiCareSystemDbContext context, ICartRepository cartRepository, IOrderRepository orderRepository, INormalFunctionsRepository normalFunctionsRepository)
+        public OrderDetailsRepository(KoicareathomeContext context, ICartRepository cartRepository, IOrderRepository orderRepository, INormalFunctionsRepository normalFunctionsRepository)
         {
             _context = context;
             _cartRepository = cartRepository;

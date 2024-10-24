@@ -6,8 +6,8 @@ namespace KoiCareSystemAtHome.Repositories
 {
     public class ProductRepository : GenericRepository<ProductsTbl>, IProductRepository
     {
-        private readonly KoiCareSystemDbContext _context;
-        public ProductRepository(KoiCareSystemDbContext context) : base(context)
+        private readonly KoicareathomeContext _context;
+        public ProductRepository(KoicareathomeContext context) : base(context)
         {
             _context = context;
         }

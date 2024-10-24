@@ -8,9 +8,9 @@ namespace KoiCareSystemAtHome.Repositories
     public class AccountRepository : GenericRepository<AccountTbl>, IAccountRepository
     {
         //private readonly IAccountRepository _accountRepository;
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
 
-        public AccountRepository(KoiCareSystemDbContext context) : base(context)
+        public AccountRepository(KoicareathomeContext context) : base(context)
         {
             _context = context;
         }

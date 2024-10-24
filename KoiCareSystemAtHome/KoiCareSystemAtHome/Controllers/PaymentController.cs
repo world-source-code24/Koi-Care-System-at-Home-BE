@@ -14,10 +14,10 @@ namespace KoiCareSystemAtHome.Controllers
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailsRepository _orderDetailsRepository;
         private readonly ICartRepository _cartRepository;
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly IVnPayService _vnPayService;
 
-        public PaymentController(IOrderRepository orderRepository, IOrderDetailsRepository orderDetailsRepository, ICartRepository cartRepository, KoiCareSystemDbContext context, IVnPayService vnPayService)
+        public PaymentController(IOrderRepository orderRepository, IOrderDetailsRepository orderDetailsRepository, ICartRepository cartRepository, KoicareathomeContext context, IVnPayService vnPayService)
         {
             _orderRepository = orderRepository;
             _orderDetailsRepository = orderDetailsRepository;

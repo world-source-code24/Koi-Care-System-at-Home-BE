@@ -11,10 +11,10 @@ namespace KoiCareSystemAtHome.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly IAccountRepository _accountRepository;
 
-        public AccountController(KoiCareSystemDbContext context, IAccountRepository accountRepository)
+        public AccountController(KoicareathomeContext context, IAccountRepository accountRepository)
         {
             _context = context;
             _accountRepository = accountRepository;

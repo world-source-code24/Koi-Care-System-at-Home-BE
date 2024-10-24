@@ -12,10 +12,10 @@ namespace KoiCareSystemAtHome.Controllers
     public class CartController : Controller
     {
         private readonly IGenericRepository<CartDTO> _cartService;
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly ICartRepository _cartRepository;
         private readonly ICartDetailsRepository _cartDetailsRepository;
-        public CartController(IGenericRepository<CartDTO> cartService, KoiCareSystemDbContext context
+        public CartController(IGenericRepository<CartDTO> cartService, KoicareathomeContext context
             , ICartRepository cartRepository, ICartDetailsRepository cartDetailsRepository)
         {
             _cartService = cartService;

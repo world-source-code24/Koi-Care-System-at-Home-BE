@@ -11,8 +11,8 @@ namespace KoiCareSystemAtHome.Repositories
     public class TokenProvider
     {
         private readonly IConfiguration _configuration;
-        private readonly KoiCareSystemDbContext _context;
-        public TokenProvider(IConfiguration configuration, KoiCareSystemDbContext context)
+        private readonly KoicareathomeContext _context;
+        public TokenProvider(IConfiguration configuration, KoicareathomeContext context)
         {
             _configuration = configuration;
             _context = context;

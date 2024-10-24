@@ -7,8 +7,8 @@ namespace KoiCareSystemAtHome.Repositories
 {
     public class NoteRepository : GenericRepository<NotesTbl>, INoteRepository
     {
-        private readonly KoiCareSystemDbContext _context;
-        public NoteRepository(KoiCareSystemDbContext context) : base(context)
+        private readonly KoicareathomeContext _context;
+        public NoteRepository(KoicareathomeContext context) : base(context)
         {
             _context = context;
         }

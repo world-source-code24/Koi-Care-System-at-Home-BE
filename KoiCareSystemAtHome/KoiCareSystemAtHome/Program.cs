@@ -18,7 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Database Services
-builder.Services.AddDbContext<KoiCareSystemDbContext>(options =>
+builder.Services.AddDbContext<KoicareathomeContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareSystem")));
 
 //Service Token
@@ -45,7 +45,7 @@ builder.Services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
-builder.Services.AddScoped<AllEnum>();
+builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 
 //Enum
 builder.Services.AddScoped<AllEnum>();

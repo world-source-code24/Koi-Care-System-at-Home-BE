@@ -6,9 +6,9 @@ namespace KoiCareSystemAtHome.Repositories
 {
     public class PondRepository : IPondRepository
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
 
-        public PondRepository(KoiCareSystemDbContext context)
+        public PondRepository(KoicareathomeContext context)
         {
             _context = context;
         }

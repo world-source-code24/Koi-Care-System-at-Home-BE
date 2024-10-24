@@ -7,8 +7,8 @@ namespace KoiCareSystemAtHome.Repositories
 {
     public class KoiChartRepository : GenericRepository<KoiGrowthChartsTbl>, IKoiChartRepository
     {
-        private readonly KoiCareSystemDbContext _context;
-        public KoiChartRepository(KoiCareSystemDbContext context) : base(context)
+        private readonly KoicareathomeContext _context;
+        public KoiChartRepository(KoicareathomeContext context) : base(context)
         {
             _context = context;
         }

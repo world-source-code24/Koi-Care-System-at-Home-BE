@@ -11,11 +11,11 @@ namespace KoiCareSystemAtHome.Controllers
 {
     public class OrderDetailsController : ControllerBase
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly INormalFunctionsRepository _normalFunctions;
         private readonly ICartRepository _cart;
 
-        public OrderDetailsController(KoiCareSystemDbContext context, INormalFunctionsRepository normalFunctions, ICartRepository cart)
+        public OrderDetailsController(KoicareathomeContext context, INormalFunctionsRepository normalFunctions, ICartRepository cart)
         {
             _context = context;
             _normalFunctions = normalFunctions;

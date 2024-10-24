@@ -11,8 +11,8 @@ namespace KoiCareSystemAtHome.Controllers
     public class KoiController : ControllerBase
     {
         private readonly IKoiRepository _koiRepository;
-        private readonly KoiCareSystemDbContext _context;
-        public KoiController(IKoiRepository koiRepository, KoiCareSystemDbContext context)
+        private readonly KoicareathomeContext _context;
+        public KoiController(IKoiRepository koiRepository, KoicareathomeContext context)
         {
             _koiRepository = koiRepository;
             _context = context;

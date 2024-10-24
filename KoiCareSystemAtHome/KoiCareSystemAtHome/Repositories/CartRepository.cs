@@ -9,9 +9,9 @@ namespace KoiCareSystemAtHome.Repositories
 {
     public class CartRepository : ICartRepository
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
 
-        public CartRepository(KoiCareSystemDbContext context)
+        public CartRepository(KoicareathomeContext context)
         {
             _context = context;
         }

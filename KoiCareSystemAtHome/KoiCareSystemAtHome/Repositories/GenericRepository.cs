@@ -8,10 +8,10 @@ namespace KoiCareSystemAtHome.Repositories
 
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly DbSet<T> _dbSet;
 
-        public GenericRepository(KoiCareSystemDbContext context)
+        public GenericRepository(KoicareathomeContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();

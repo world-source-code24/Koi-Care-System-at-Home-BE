@@ -9,11 +9,11 @@ namespace KoiCareSystemAtHome.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly INormalFunctionsRepository _normalFunctionsRepository;
         private readonly ICartRepository _cartRepository;
 
-        public OrderRepository(ICartRepository cartRepository, KoiCareSystemDbContext context, INormalFunctionsRepository normalFunctionsRepository)
+        public OrderRepository(ICartRepository cartRepository, KoicareathomeContext context, INormalFunctionsRepository normalFunctionsRepository)
         {
             _context = context;
             _normalFunctionsRepository = normalFunctionsRepository;

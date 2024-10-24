@@ -7,8 +7,8 @@ namespace KoiCareSystemAtHome.Repositories
 {
     public class WaterParameterRepository : GenericRepository<WaterParametersTbl>, IWaterParameterRepository
     {
-        private readonly KoiCareSystemDbContext _context;
-        public WaterParameterRepository(KoiCareSystemDbContext context) : base(context)
+        private readonly KoicareathomeContext _context;
+        public WaterParameterRepository(KoicareathomeContext context) : base(context)
         {
             _context = context;
         }

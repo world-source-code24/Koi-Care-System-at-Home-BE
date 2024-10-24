@@ -11,9 +11,9 @@ namespace KoiCareSystemAtHome.Controllers
     [ApiController]
     public class NoteController : ControllerBase
     {
-        private readonly KoiCareSystemDbContext _context;
+        private readonly KoicareathomeContext _context;
         private readonly INoteRepository _noteRepository;
-        public NoteController (KoiCareSystemDbContext context, INoteRepository noteRepository)
+        public NoteController (KoicareathomeContext context, INoteRepository noteRepository)
         {
             _context = context;
             _noteRepository = noteRepository;

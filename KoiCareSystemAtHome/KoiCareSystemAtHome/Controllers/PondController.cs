@@ -13,8 +13,8 @@ namespace KoiCareSystemAtHome.Controllers
     [Route("api/[controller]")]
     public class PondController : ControllerBase
     {
-        private readonly KoiCareSystemDbContext _context;
-        public PondController(KoiCareSystemDbContext context)
+        private readonly KoicareathomeContext _context;
+        public PondController(KoicareathomeContext context)
         {
             _context = context;
         }
