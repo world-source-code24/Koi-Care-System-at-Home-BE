@@ -1,13 +1,13 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace KoiCareSystemAtHome.Repositories
 {
     public class AccountRepository : GenericRepository<AccountTbl>, IAccountRepository
     {
-        //private readonly IAccountRepository _accountRepository;
         private readonly KoicareathomeContext _context;
 
         public AccountRepository (KoicareathomeContext context) : base(context)
@@ -80,7 +80,7 @@ namespace KoiCareSystemAtHome.Repositories
 
         public async Task<bool> UpdateRole(int id, bool check)
         {
-            var getProfile =await GetAccountProfile(id);
+            var getProfile = await GetAccountProfile(id);
             if (check)
             {
                 getProfile.Role = AllEnum.UserRole.Member.ToString();
@@ -88,7 +88,7 @@ namespace KoiCareSystemAtHome.Repositories
             }
             else
             {
-               getProfile.Role= AllEnum.UserRole.Guest.ToString();
+                getProfile.Role = AllEnum.UserRole.Guest.ToString();
                 return false;
             }
 
@@ -108,17 +108,48 @@ namespace KoiCareSystemAtHome.Repositories
                 return false;
             }
 
-           account.Status = true;
-           await  _context.SaveChangesAsync();
+            account.Status = true;
+            await _context.SaveChangesAsync();
 
-           return true;
+            return true;
         }
         public async Task<int> GetTotalAccounts()
-        {return await _context.AccountTbls.CountAsync(acc => acc.Status && !acc.Role.Equals("admin"));
+        {
+            return await _context.AccountTbls.CountAsync(acc => acc.Status && !acc.Role.Equals("admin"));
         }
         public async Task<int> GetTotalAccountsByRole(string role)
         {
             return await _context.AccountTbls.CountAsync(acc => acc.Status && acc.Role.Equals(role));
+        }
+
+        public async Task<bool> BuyMembership(int accId)
+        {
+            var membership = await _context.MembershipDashboards.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
+            if (membership == null)
+            {
+                membership = new MembershipDashboard
+                {
+                    AccId = accId,
+                    Money = 99,
+                    StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                };
+                _context.MembershipDashboards.Add(membership);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else if (membership != null)
+            {
+                membership.StartDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                membership.Money = 99;
+                membership.AccId = accId;
+                _context.MembershipDashboards.Update(membership);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

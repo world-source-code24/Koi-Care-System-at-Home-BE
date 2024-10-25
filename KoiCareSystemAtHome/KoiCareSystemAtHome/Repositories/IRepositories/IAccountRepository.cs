@@ -27,11 +27,6 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
 
         // Update role guest va member.
         Task<bool> UpdateRole(int id, bool check);
-
-
-        //Cac Interface dung cho Admin
-        //Lay toan bo Account
-
-
+        Task<bool> BuyMembership(int accId);
     }
 }

@@ -71,7 +71,7 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync(string name, string phone, string email, string password, string confirmedPassword)
         {
-            var account = _context.AccountTbls.SingleOrDefault(acc => acc.Email == email && acc.Status);
+            var account = _context.AccountTbls.SingleOrDefault(acc => acc.Email == email && acc.Status!=true);
             if (account != null)
             {
                 return BadRequest(new { Susccess = false, Message = "Account was existed!" });

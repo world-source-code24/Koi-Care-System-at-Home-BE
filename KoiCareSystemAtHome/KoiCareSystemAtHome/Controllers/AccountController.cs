@@ -117,15 +117,11 @@ namespace KoiCareSystemAtHome.Controllers
                 {
                     return NotFound("No account available!!");
                 }
-                acc.Role = "member";
-                acc.StartDate = DateOnly.FromDateTime(DateTime.Now);
-                //var cartTbl = new CartTbl
-                //{
-                //    ProductId = 1002,
-                //    AccId = accId,
-                //    Quantity = 1
-                //};
-                //_context.CartTbls.Add(cartTbl);
+                bool isSuccess = await _accountRepository.BuyMembership(accId);
+                if (isSuccess)
+                {
+                    acc.Role = "member";
+                }
                 await _accountRepository.UpdateAsync(acc);
                 await _context.SaveChangesAsync();
                 return Ok(new { success = true, message = "Update successfully!!"});
