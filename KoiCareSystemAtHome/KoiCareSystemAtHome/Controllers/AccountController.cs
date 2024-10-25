@@ -40,9 +40,9 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpPut("Profile")]
-        public async Task<IActionResult> UpdateProfile(int accId, string name, string image, string phone, string address)
+        public async Task<IActionResult> UpdateProfile(int accId, ProfileDTO profile)
         {
-            bool updateSuccess = await _accountRepository.UpdateProfile(accId, name, image, phone, address);
+            bool updateSuccess = await _accountRepository.UpdateProfile(accId, profile.Name, profile.Image, profile.Phone, profile.Address);
             if (!updateSuccess)
             {
                 return BadRequest(new { success = false, message = "Cannot update Profile" });
@@ -159,19 +159,16 @@ namespace KoiCareSystemAtHome.Controllers
 
         //Changing password
         [HttpPut("change-password{accId}")]
-        public async Task<IActionResult> ChangePassword(int accId, string changePassword, string confirmedPassword)
+        public async Task<IActionResult> ChangePassword(int accId, string changePassword, string code, string confirmCode)
         {
             try
             {
                 var acc = await _accountRepository.GetByIdAsync(accId);
-                if (acc == null)
+                if (acc == null|| code != confirmCode)
                 {
-                    return NotFound("No account available!!");
+                    return NotFound("An error occur when processing!!");
                 }
-                if(acc.Password == confirmedPassword)
-                {
-                    acc.Password = changePassword;
-                }
+                acc.Password = changePassword;
                 await _accountRepository.UpdateAsync(acc);
                 return Ok(new { success = true, message = "Changing successfully!!" });
             }
