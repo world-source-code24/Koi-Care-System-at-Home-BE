@@ -82,5 +82,10 @@ namespace KoiCareSystemAtHome.Repositories
                 }).ToListAsync();
             return results;
         }
+
+        public async Task<int> GetTotalProduct()
+        {
+            return await _context.ProductsTbls.CountAsync(p => p.Status!=false);
+        }
     }
 }
