@@ -10,7 +10,7 @@ namespace KoiCareSystemAtHome.Repositories
     {
         private readonly KoicareathomeContext _context;
 
-        public AccountRepository(KoicareathomeContext context) : base(context)
+        public AccountRepository (KoicareathomeContext context) : base(context)
         {
             _context = context;
         }
@@ -49,6 +49,7 @@ namespace KoiCareSystemAtHome.Repositories
                 Name = account.Name,
                 Email = account.Email,
                 Phone = account.Phone,
+                Address = account.Address,
                 Role = account.Role,
             };
             return accountDto;
@@ -67,7 +68,7 @@ namespace KoiCareSystemAtHome.Repositories
             if (account == null)
             {
                 return false;
-            }
+            }if (image == null) image = "";
             account.Image = image;
             account.Name = name;
             account.Address = address;
