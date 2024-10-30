@@ -23,7 +23,8 @@ namespace KoiCareSystemAtHome.Controllers
             try
             {
                 var products = await _productRepository.GetAllProductsAsync();
-                return Ok(new { success = true, Product = products });
+                int totalProduct = await _productRepository.GetTotalProduct();
+                return Ok(new { success = true, Product = products, total = totalProduct });
             }
             catch (Exception ex)
             {
