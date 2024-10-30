@@ -27,6 +27,7 @@ namespace KoiCareSystemAtHome.Repositories
                     Weight = p.Weight,
                     Sex = p.Sex,
                     Breed = p.Breed,
+                    PondId = p.PondId,
                 }).ToListAsync();
             return ListOfKoi;
         }
@@ -45,6 +46,7 @@ namespace KoiCareSystemAtHome.Repositories
                     Weight = p.Weight,
                     Sex = p.Sex,
                     Breed = p.Breed,
+                    PondId = p.PondId,
                 }).FirstOrDefaultAsync();
             if(koiDetails == null)
             {
@@ -69,6 +71,7 @@ namespace KoiCareSystemAtHome.Repositories
                                        Weight = koi.Weight,
                                        Sex = koi.Sex,
                                        Breed = koi.Breed,
+                                       PondId = koi.PondId,
                                    }).ToListAsync();
             return ListOfKoi;
         }
