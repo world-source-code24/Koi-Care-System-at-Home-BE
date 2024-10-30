@@ -56,11 +56,22 @@ namespace KoiCareSystemAtHome.Repositories
         }
         public async Task<List<AccountTbl>> GetAllAccounts()
         {
-            return await _context.AccountTbls.ToListAsync();
+            return await _context.AccountTbls
+            .GroupBy(acc => acc.Email)
+            .Select(group => group
+            .OrderByDescending(acc => acc.AccId)
+            .FirstOrDefault())
+            .ToListAsync();
         }
         public async Task<List<AccountTbl>> GetAllAccountsByRole(string role)
         {
-            return await _context.AccountTbls.Where(a => a.Role.ToLower().Equals(role.ToLower())).ToListAsync();
+            return await _context.AccountTbls.Where(a => a.Role.ToLower()
+                .Equals(role.ToLower()))
+                .GroupBy(acc => acc.Email)
+                .Select(group => group
+                .OrderByDescending(acc => acc.AccId) 
+                .FirstOrDefault())
+                .ToListAsync();
         }
         public async Task<bool> UpdateProfile(int id, string name, string image, string phone, string address)
         {

@@ -62,6 +62,9 @@ namespace KoiCareSystemAtHome.Controllers
                 Data = token
             });
         }
+
+        [HttpPut("RefeshToken")]
+
         private DateTime ConvertUnixTimeToDateTime(long utcExpireDate)
         {
             var dateTimeInterval = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
@@ -71,12 +74,12 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync(string name, string phone, string email, string password, string confirmedPassword)
         {
-            var account = _context.AccountTbls.SingleOrDefault(acc => acc.Email == email && acc.Status!=true);
+            var account = _context.AccountTbls.SingleOrDefault(acc => acc.Email == email && acc.Status);
             if (account != null)
             {
                 return BadRequest(new { Susccess = false, Message = "Account was existed!" });
             }
-            if (_context.AccountTbls.SingleOrDefault(acc => acc.Phone == phone) != null)
+            if (_context.AccountTbls.SingleOrDefault(acc => acc.Phone == phone  && acc.Status) != null)
             {
                 return BadRequest(new { Susccess = false, Message = "Phone was existed!" });
             }
@@ -91,6 +94,7 @@ namespace KoiCareSystemAtHome.Controllers
                 Phone = phone,
                 Email = email,
                 Password = password,
+                StartDate = DateOnly.FromDateTime(DateTime.Now),
                 Status = false,
             };
             await _accountRepository.AddAsync(newAccount);
@@ -147,7 +151,7 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPut]
         public async Task<IActionResult> verifyAccount(int userCode, int verifyCode, string email)
         {
-            var acc = await _context.AccountTbls.FirstOrDefaultAsync(acc => acc.Email == email);
+            var acc = await _context.AccountTbls.OrderByDescending(acc => acc.AccId).FirstOrDefaultAsync(acc => acc.Email == email);
             if (acc != null)
             {
                 if (userCode == verifyCode)
@@ -155,10 +159,6 @@ namespace KoiCareSystemAtHome.Controllers
                     acc.Status = true;
                     await _context.SaveChangesAsync();
                     return Ok(new { success = true });
-                }
-                else
-                {
-                    await _accountRepository.DeleteAsync(acc.AccId);
                 }
             }
             return BadRequest();
