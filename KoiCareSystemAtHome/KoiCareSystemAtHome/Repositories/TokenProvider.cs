@@ -41,10 +41,36 @@ namespace KoiCareSystemAtHome.Repositories
             };
             var token = jwtTokenHandler.CreateToken(tokenDecriptor);
             var accessToken = jwtTokenHandler.WriteToken(token);
+            var refreshToken = GenerateRefreshToken();
+
+            //Luu vao database
+            var refreshTokenEntity = new RefreshToken
+            {
+                TokenId = Guid.NewGuid().ToString(),
+                AccId = account.AccId,
+                JwtId = token.Id,
+                Token = refreshToken,
+                IsUsed = false,
+                IsRevoked = false,
+                IssueAt = DateTime.UtcNow,
+                ExpiredAt = DateTime.UtcNow.AddMinutes(10),
+            };
+            await _context.AddAsync(refreshTokenEntity);
+            await _context.SaveChangesAsync();
             return new TokenModel
             {
                 AccessToken = accessToken,
+                RefreshToken = refreshToken,
             };
+        }
+        private string GenerateRefreshToken()
+        {
+            var random = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(random);
+                return Convert.ToBase64String(random);
+            }
         }
     }
 }
