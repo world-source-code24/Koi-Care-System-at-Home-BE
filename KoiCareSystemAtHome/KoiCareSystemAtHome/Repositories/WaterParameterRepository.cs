@@ -16,7 +16,7 @@ namespace KoiCareSystemAtHome.Repositories
         public async Task<List<WaterParametersTbl>> GetAllByPondIdAsync(int pondId)
         {
 
-            var results = await _context.WaterParametersTbls.Where(p => p.PondId == pondId)
+            var results = await _context.WaterParametersTbls.Where(p => p.PondId == pondId).OrderBy(p => p.Date)
                 .Select(p => new WaterParametersTbl
                 {
 
@@ -38,7 +38,7 @@ namespace KoiCareSystemAtHome.Repositories
 
                     TotalChlorines = p.TotalChlorines,
 
-                    Date = DateTime.Now,
+                    Date = p.Date,
 
                     Note = p.Note,
 
@@ -74,7 +74,7 @@ namespace KoiCareSystemAtHome.Repositories
 
                     TotalChlorines = p.TotalChlorines,
 
-                    Date = DateTime.Now,
+                    Date = p.Date,
 
                     Note = p.Note,
 
