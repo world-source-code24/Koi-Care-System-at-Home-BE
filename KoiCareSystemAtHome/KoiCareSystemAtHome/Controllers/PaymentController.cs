@@ -54,13 +54,11 @@ namespace KoiCareSystemAtHome.Controllers
                     if (int.TryParse(Request.Query["accId"], out int accId))
                     {
                         _accountRepository.BuyMembership(accId);
-                        return Redirect("https://www.google.co.uk/");
+                        return Ok();
                     }
-                    return Redirect("https://fullstack.edu.vn/");
                 }
-                return Redirect("https://www.facebook.com/");
             }
-            return Redirect("https://www.youtube.com/");
+            return BadRequest();
         }
     }
 }
