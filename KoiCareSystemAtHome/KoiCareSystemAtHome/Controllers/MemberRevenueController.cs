@@ -17,7 +17,8 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<IActionResult> GetMembershipRevenue()
         {
             var membershipRevenue = await _membershipRepository.GetRenevueMembership();
-            return Ok(membershipRevenue);
+            decimal totalMembershipRevenue = await _membershipRepository.GetTotalRenevueMembership();
+            return Ok(new{ membershipRevenue = membershipRevenue, total = totalMembershipRevenue});
         }
     }
 }

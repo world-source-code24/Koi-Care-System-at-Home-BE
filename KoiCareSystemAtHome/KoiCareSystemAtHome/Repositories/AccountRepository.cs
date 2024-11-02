@@ -144,18 +144,32 @@ namespace KoiCareSystemAtHome.Repositories
                     Money = 99,
                     StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 };
+
+                var accountUpdate = await _context.AccountTbls.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
+                if (accountUpdate != null) // Ensure accountUpdate is not null
+                {
+                    accountUpdate.Role = "member"; // Update the role directly
+                    accountUpdate.StartDate = DateOnly.FromDateTime(DateTime.Now);
+                    accountUpdate.EndDate = DateOnly.FromDateTime(DateTime.UtcNow).AddMonths(6);
+                }
+
                 _context.MembershipDashboards.Add(membership);
                 await _context.SaveChangesAsync();
                 return true;
             }
             else if (membership != null)
             {
-                membership.StartDate = DateOnly.FromDateTime(DateTime.UtcNow);
-                membership.Money = 99;
-                membership.AccId = accId;
-                _context.MembershipDashboards.Update(membership);
-                await _context.SaveChangesAsync();
-                return true;
+                var accountUpdate = await _context.AccountTbls.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
+                if (accountUpdate.StartDate >= accountUpdate.EndDate)
+                {
+                    accountUpdate.Role = "member";
+                    _context.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {

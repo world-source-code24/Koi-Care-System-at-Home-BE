@@ -31,5 +31,11 @@ namespace KoiCareSystemAtHome.Repositories
 
             return monthlyRevenue;
         }
+
+        public async Task<decimal> GetTotalRenevueMembership()
+        {
+            decimal totalRenevueMembership = await _context.MembershipDashboards.SumAsync(m => m.Money);
+            return totalRenevueMembership;
+        }
     }
 }

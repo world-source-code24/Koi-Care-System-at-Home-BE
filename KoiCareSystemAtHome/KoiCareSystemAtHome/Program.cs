@@ -1,5 +1,6 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
+using KoiCareSystemAtHome.Models.Services;
 using KoiCareSystemAtHome.Repositories;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,7 +28,6 @@ builder.Services.AddControllersWithViews();
 
 //Service Send Email
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-builder.Services.AddTransient<IEmailService, EmailService>();
 
 //Service Repository
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -44,8 +44,8 @@ builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
-builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
 
 //Enum
 builder.Services.AddScoped<AllEnum>();
@@ -86,7 +86,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-//Swagger get JWT Token
 //Swagger get JWT Token
 builder.Services.AddSwaggerGen(c =>
 {
@@ -144,6 +143,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-// Register VnPayService
-builder.Services.AddScoped<IVnPayService, VnPayService>();

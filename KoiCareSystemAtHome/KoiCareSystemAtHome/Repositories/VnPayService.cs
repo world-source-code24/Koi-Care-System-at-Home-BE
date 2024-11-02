@@ -1,101 +1,83 @@
 ﻿using KoiCareSystemAtHome.Library;
 using KoiCareSystemAtHome.Models;
-using KoiCareSystemAtHome.Repositories.IRepositories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+using KoiCareSystemAtHome.Models.Services;
+using Microsoft.Identity.Client;
 
 namespace KoiCareSystemAtHome.Repositories
 {
     public class VnPayService : IVnPayService
     {
         private readonly IConfiguration _configuration;
-
         public VnPayService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-
-        // Tao dia chi url 
-        public string CreatePaymentUrl(PaymentInformationModel model, HttpContext context)
+        public string CreatePaymentUrl(HttpContext context, VnPaymentRequestModel model, int accId)
         {
-            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
-            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
-            var pay = new VnPayLibrary();
-            // Dung de edit dia chi url tra ve
-            var urlCallBack = _configuration["Vnpay:ReturnUrlTest"];
+            var vnpay = new VnPayLibrary();
+            string returnUrl = $"{_configuration["Vnpay:PaymentBackUrl"]}?accId={accId}";
 
-            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
-            pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
-            pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", ((int)model.Amount * 100).ToString());
-            pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
-            pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
-            pay.AddRequestData("vnp_IpAddr", GetIpAddress(context));
-            pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{model.Name} {model.OrderDescription} {model.Amount}");
-            pay.AddRequestData("vnp_OrderType", model.OrderType);
-            pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
-            pay.AddRequestData("vnp_TxnRef", tick);
+            vnpay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
+            vnpay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
+            vnpay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
+            vnpay.AddRequestData("vnp_Amount", (model.Amount * 100).ToString()); /*Số tiền thanh toán. Số tiền không 
+            mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND
+            (một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần(khử phần thập phân), sau đó gửi sang VNPAY
+            là: 10000000*/
 
-            var paymentUrl = pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+            vnpay.AddRequestData("vnp_CreateDate", model.CreatedDate.ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
+            vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress(context));
+            vnpay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
 
+            vnpay.AddRequestData("vnp_OrderInfo", "Pay for the order:" + model.OrderId);
+            vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
+            vnpay.AddRequestData("vnp_ReturnUrl", returnUrl);
+
+            vnpay.AddRequestData("vnp_TxnRef", tick); /* Mã tham chiếu của giao dịch tại hệ 
+            thống của merchant.Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY.Không được
+            trùng lặp trong ngày*/
+            var paymentUrl = vnpay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
             return paymentUrl;
         }
 
-
-        public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
+        public VnPaymentResponseModel PaymentExecute(IQueryCollection collections)
         {
-            var vnPay = new VnPayLibrary();
-
-            foreach (var (key, value) in collection)
+            var vnpay = new VnPayLibrary();
+            foreach (var (key, value) in collections)
             {
                 if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
                 {
-                    vnPay.AddResponseData(key, value);
+                    vnpay.AddResponseData(key, value.ToString());
                 }
             }
 
-            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
-            var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
-            var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
-            var vnpSecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
-            var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
-
-            var checkSignature = vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
-
+            var orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
+            var vnpayTranId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
+            var vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
+            var vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
+            var vnp_OrderInfo = vnpay.GetResponseData("vnp_OrderInfo");
+            Console.WriteLine($"Secure Hash: {vnp_SecureHash}");
+            Console.WriteLine($"HashSecret: {_configuration["Vnpay:HashSecret"]}");
+            bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _configuration["Vnpay:HashSecret"]);
             if (!checkSignature)
-                return new PaymentResponseModel()
+            {
+                return new VnPaymentResponseModel
                 {
-                    Success = false
+                    Success = false,
                 };
-
-            return new PaymentResponseModel()
+            }
+            return new VnPaymentResponseModel
             {
                 Success = true,
                 PaymentMethod = "VnPay",
-                OrderDescription = orderInfo,
+                OrderDescription = vnp_OrderInfo,
                 OrderId = orderId.ToString(),
-                PaymentId = vnPayTranId.ToString(),
-                TransactionId = vnPayTranId.ToString(),
-                Token = vnpSecureHash,
-                VnPayResponseCode = vnpResponseCode
+                TransactionId = vnpayTranId.ToString(),
+                Token = vnp_SecureHash.ToString(),
+                VnPayResponseCode = vnp_ResponseCode,
             };
-        }
-
-
-        public PaymentResponseModel PaymentExecute(IQueryCollection collections)
-        {
-            var pay = new VnPayLibrary();
-            var response = GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
-
-            return response;
-        }
-
-        private string GetIpAddress(HttpContext context)
-        {
-            var ipAddress = context.Connection.RemoteIpAddress?.ToString();
-            return ipAddress ?? "Unknown IP";
         }
     }
 }
