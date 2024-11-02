@@ -38,7 +38,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return BadRequest(new { Success = false, Message = "Email and Password can not blank!" });
             }
-            var acc = _context.AccountTbls.SingleOrDefault(acc => acc.Email == login.Email && acc.Status);
+            var acc = _context.AccountTbls.SingleOrDefault(acc => acc.Email == login.Email && acc.Status==true);
             if (acc == null)
             {
                 return BadRequest(new { Success = false, Message = "Your account not exist!" });

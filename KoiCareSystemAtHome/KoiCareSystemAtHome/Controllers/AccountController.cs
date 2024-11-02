@@ -106,32 +106,6 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        //Access membership
-        [HttpPut("membership{accId}")]
-        public async Task<IActionResult> MembershipAccess(int accId)
-        {
-            try
-            {
-                var acc = await _accountRepository.GetByIdAsync(accId);
-                if (acc == null)
-                {
-                    return NotFound("No account available!!");
-                }
-                bool isSuccess = await _accountRepository.BuyMembership(accId);
-                if (isSuccess)
-                {
-                    acc.Role = "member";
-                }
-                await _accountRepository.UpdateAsync(acc);
-                await _context.SaveChangesAsync();
-                return Ok(new { success = true, message = "Update successfully!!"});
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPut("edit-role/{accId}")]
         public async Task<IActionResult> EditRole(int accId, string role)
         {
