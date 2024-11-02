@@ -135,35 +135,34 @@ namespace KoiCareSystemAtHome.Repositories
 
         public async Task<bool> BuyMembership(int accId)
         {
-            bool result = false;
             try
             {
                 var account = await _context.AccountTbls.SingleOrDefaultAsync(a => a.AccId.Equals(accId));
-                if (account.Role.ToLower().Equals("guest"))
+                if (account != null)
                 {
-                    var membership = new MembershipDashboard
+                    if (account.Role.ToLower().Equals("guest"))
                     {
-                        AccId = accId,
-                        Money = 99,
-                        StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                    };
-                    account.Role = "member";
-                    account.StartDate = DateOnly.FromDateTime(DateTime.Now);
-                    account.EndDate = account.StartDate.AddMonths(6);
-                    _context.AccountTbls.Update(account);
-                    _context.MembershipDashboards.Add(membership);
-                    _context.SaveChanges();
-                    result = true;
+                        var membership = new MembershipDashboard
+                        {
+                            AccId = accId,
+                            Money = 99,
+                            StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                        };
+                        account.Role = "member";
+                        account.StartDate = DateOnly.FromDateTime(DateTime.Now);
+                        account.EndDate = account.StartDate.AddMonths(6);
+                        _context.AccountTbls.Update(account);
+                        _context.MembershipDashboards.Add(membership);
+                        _context.SaveChanges();
+                        return true;
+                    }
                 }
-                
+                return false;
             }
             catch (Exception ex)
             {
-                result = false;
+                return false;
             }
-            return result;
-
-
             //var membership = await _context.MembershipDashboards.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
             //if (membership == null)
             //{

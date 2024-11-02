@@ -41,7 +41,7 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { paymentUrl });
         }
 
-        [HttpPost("callback")]
+        [HttpGet("callback")]
         public async Task<IActionResult> PaymentCallBack()
         {
             var respone = _vpnPayService.PaymentExecute(Request.Query);
@@ -53,12 +53,15 @@ namespace KoiCareSystemAtHome.Controllers
                     //luu vao database
                     if (int.TryParse(Request.Query["accId"], out int accId))
                     {
-                        _accountRepository.BuyMembership(accId);
-                        return Redirect("https://koicareathome.azurewebsites.net/payment");
+                        bool isSuccess = await _accountRepository.BuyMembership(accId);
+                        if (isSuccess)
+                        {
+                            return Redirect("https://koicareathome.azurewebsites.net/paymentSuccess");
+                        }
                     }
                 }
             }
-            return Redirect("https://koicareathome.azurewebsites.net/unsuccessPayment");
+            return Redirect("https://koicareathome.azurewebsites.net/paymentFail");
         }
     }
 }
