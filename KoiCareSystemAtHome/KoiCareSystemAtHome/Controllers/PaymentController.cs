@@ -54,11 +54,11 @@ namespace KoiCareSystemAtHome.Controllers
                     if (int.TryParse(Request.Query["accId"], out int accId))
                     {
                         _accountRepository.BuyMembership(accId);
-                        return Ok();
+                        return Redirect("https://koicareathome.azurewebsites.net/payment");
                     }
                 }
             }
-            return BadRequest();
+            return Redirect("https://koicareathome.azurewebsites.net/unsuccessPayment");
         }
     }
 }
