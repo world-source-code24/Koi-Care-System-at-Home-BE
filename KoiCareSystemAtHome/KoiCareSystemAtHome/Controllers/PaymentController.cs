@@ -42,7 +42,7 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpGet("callback")]
-        public IActionResult PaymentCallBack()
+        public async Task<IActionResult> PaymentCallBack()
         {
             var respone = _vpnPayService.PaymentExecute(Request.Query);
 
