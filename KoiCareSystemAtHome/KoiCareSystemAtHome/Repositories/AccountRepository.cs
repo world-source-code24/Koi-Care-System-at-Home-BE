@@ -135,48 +135,77 @@ namespace KoiCareSystemAtHome.Repositories
 
         public async Task<bool> BuyMembership(int accId)
         {
-            var membership = await _context.MembershipDashboards.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
-            if (membership == null)
+            bool result = false;
+            try
             {
-                membership = new MembershipDashboard
+                var account = await _context.AccountTbls.SingleOrDefaultAsync(a => a.AccId.Equals(accId));
+                if (account.Role.ToLower().Equals("guest"))
                 {
-                    AccId = accId,
-                    Money = 99,
-                    StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                };
-
-                var accountUpdate = await _context.AccountTbls.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
-                if (accountUpdate != null) // Ensure accountUpdate is not null
-                {
-                    accountUpdate.Role = "member"; // Update the role directly
-                    _context.AccountTbls.Update(accountUpdate);
-                    accountUpdate.StartDate = DateOnly.FromDateTime(DateTime.Now);
-                    accountUpdate.EndDate = DateOnly.FromDateTime(DateTime.UtcNow).AddMonths(6);
-                }
-
-                _context.MembershipDashboards.Add(membership);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            else if (membership != null)
-            {
-                var accountUpdate = await _context.AccountTbls.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
-                if (accountUpdate.StartDate >= accountUpdate.EndDate)
-                {
-                    accountUpdate.Role = "member";
-                    _context.AccountTbls.Update(accountUpdate);
+                    var membership = new MembershipDashboard
+                    {
+                        AccId = accId,
+                        Money = 99,
+                        StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                    };
+                    account.Role = "member";
+                    account.StartDate = DateOnly.FromDateTime(DateTime.Now);
+                    account.EndDate = account.StartDate.AddMonths(6);
+                    _context.AccountTbls.Update(account);
+                    _context.MembershipDashboards.Add(membership);
                     _context.SaveChanges();
-                    return true;
+                    result = true;
                 }
-                else
-                {
-                    return false;
-                }
+                
             }
-            else
+            catch (Exception ex)
             {
-                return false;
+                result = false;
             }
+            return result;
+
+
+            //var membership = await _context.MembershipDashboards.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
+            //if (membership == null)
+            //{
+            //    membership = new MembershipDashboard
+            //    {
+            //        AccId = accId,
+            //        Money = 99,
+            //        StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+            //    };
+
+            //    var accountUpdate = await _context.AccountTbls.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
+            //    if (accountUpdate != null) // Ensure accountUpdate is not null
+            //    {
+            //        accountUpdate.Role = "member"; // Update the role directly
+            //        _context.AccountTbls.Update(accountUpdate);
+            //        accountUpdate.StartDate = DateOnly.FromDateTime(DateTime.Now);
+            //        accountUpdate.EndDate = DateOnly.FromDateTime(DateTime.UtcNow).AddMonths(6);
+            //    }
+
+            //    _context.MembershipDashboards.Add(membership);
+            //    await _context.SaveChangesAsync();
+            //    return true;
+            //}
+            //else if (membership != null)
+            //{
+            //    var accountUpdate = await _context.AccountTbls.FirstOrDefaultAsync(m => m.AccId.Equals(accId));
+            //    if (accountUpdate.StartDate >= accountUpdate.EndDate)
+            //    {
+            //        accountUpdate.Role = "member";
+            //        _context.AccountTbls.Update(accountUpdate);
+            //        _context.SaveChanges();
+            //        return true;
+            //    }
+            //    else
+            //    {
+            //        return false;
+            //    }
+            //}
+            //else
+            //{
+            //    return false;
+            //}
         }
     }
 }

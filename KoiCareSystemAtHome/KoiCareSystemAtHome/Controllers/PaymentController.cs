@@ -42,7 +42,7 @@ namespace KoiCareSystemAtHome.Controllers
         }
 
         [HttpGet("callback")]
-        public IActionResult PaymentCallBack()
+        public async Task<IActionResult> PaymentCallBack()
         {
             var respone = _vpnPayService.PaymentExecute(Request.Query);
 
@@ -53,8 +53,8 @@ namespace KoiCareSystemAtHome.Controllers
                     //luu vao database
                     if (int.TryParse(Request.Query["accId"], out int accId))
                     {
-                        _accountRepository.BuyMembership(accId);
-                        return Redirect("https://www.google.co.uk/");
+                        bool result = await _accountRepository.BuyMembership(accId);
+                        return Redirect("http://localhost:5173/profile");
                     }
                     return Redirect("https://fullstack.edu.vn/");
                 }

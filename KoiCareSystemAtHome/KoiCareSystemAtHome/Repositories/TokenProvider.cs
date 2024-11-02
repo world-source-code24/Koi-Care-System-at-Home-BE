@@ -20,30 +20,38 @@ namespace KoiCareSystemAtHome.Repositories
         public async Task<TokenModel> GenerateToken(AccountTbl account)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
-
             var secretKey = _configuration["AppSettings:SecretKey"];
             var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
-            var tokenDecriptor = new SecurityTokenDescriptor
+            // Create claims with unique identifiers
+            var claims = new[]
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    // Nguoi dung
-                    new Claim("Id", account.AccId.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, account.Email),
-                    new Claim(ClaimTypes.Role, account.Role),
+        new Claim("Id", account.AccId.ToString()),
+        new Claim(JwtRegisteredClaimNames.Email, account.Email),
+        new Claim(ClaimTypes.Role, account.Role),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // Unique identifier
+    };
 
-                    // Token
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(10),
+            // Log claims for debugging
+            foreach (var claim in claims)
+            {
+                Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+            }
+
+            // Set the token descriptor
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(10), // Set expiry time
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256)
             };
-            var token = jwtTokenHandler.CreateToken(tokenDecriptor);
+
+            // Create and write the token
+            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
             var accessToken = jwtTokenHandler.WriteToken(token);
             var refreshToken = GenerateRefreshToken();
 
-            //Luu vao database
+            // Save the refresh token to the database
             var refreshTokenEntity = new RefreshToken
             {
                 TokenId = Guid.NewGuid().ToString(),
@@ -53,16 +61,20 @@ namespace KoiCareSystemAtHome.Repositories
                 IsUsed = false,
                 IsRevoked = false,
                 IssueAt = DateTime.UtcNow,
-                ExpiredAt = DateTime.UtcNow.AddMinutes(10),
+                ExpiredAt = DateTime.UtcNow.AddDays(30), // Set a longer expiry for the refresh token
             };
-            await _context.AddAsync(refreshTokenEntity);
+
+            await _context.RefreshTokens.AddAsync(refreshTokenEntity); // Use the correct DbSet
             await _context.SaveChangesAsync();
+
+            // Return the token model
             return new TokenModel
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
             };
         }
+
         private string GenerateRefreshToken()
         {
             var random = new byte[32];
@@ -72,5 +84,6 @@ namespace KoiCareSystemAtHome.Repositories
                 return Convert.ToBase64String(random);
             }
         }
+
     }
 }
