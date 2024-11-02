@@ -149,6 +149,7 @@ namespace KoiCareSystemAtHome.Repositories
                 if (accountUpdate != null) // Ensure accountUpdate is not null
                 {
                     accountUpdate.Role = "member"; // Update the role directly
+                    _context.AccountTbls.Update(accountUpdate);
                     accountUpdate.StartDate = DateOnly.FromDateTime(DateTime.Now);
                     accountUpdate.EndDate = DateOnly.FromDateTime(DateTime.UtcNow).AddMonths(6);
                 }
@@ -163,6 +164,7 @@ namespace KoiCareSystemAtHome.Repositories
                 if (accountUpdate.StartDate >= accountUpdate.EndDate)
                 {
                     accountUpdate.Role = "member";
+                    _context.AccountTbls.Update(accountUpdate);
                     _context.SaveChanges();
                     return true;
                 }
