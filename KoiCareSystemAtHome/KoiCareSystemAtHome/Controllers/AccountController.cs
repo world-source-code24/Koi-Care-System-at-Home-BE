@@ -129,12 +129,12 @@ namespace KoiCareSystemAtHome.Controllers
 
         //Changing password
         [HttpPut("change-password{accId}")]
-        public async Task<IActionResult> ChangePassword(int accId, string changePassword, string code, string confirmCode)
+        public async Task<IActionResult> ChangePassword(int accId, string changePassword)
         {
             try
             {
                 var acc = await _accountRepository.GetByIdAsync(accId);
-                if (acc == null|| code != confirmCode)
+                if (acc == null)
                 {
                     return NotFound("An error occur when processing!!");
                 }

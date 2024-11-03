@@ -38,8 +38,11 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return BadRequest(new { Success = false, Message = "Email and Password can not blank!" });
             }
-            var acc = _context.AccountTbls.SingleOrDefault(acc => acc.Email == login.Email && acc.Status==true);
-            if (acc == null)
+            var acc = _context.AccountTbls
+                .Where(acc => acc.Email == login.Email)
+                .OrderByDescending(acc => acc.AccId)
+                .FirstOrDefault();
+            if (acc == null || !acc.Status)
             {
                 return BadRequest(new { Success = false, Message = "Your account not exist!" });
             }
@@ -152,8 +155,11 @@ namespace KoiCareSystemAtHome.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync(string name, string phone, string email, string password, string confirmedPassword)
         {
-            var account = _context.AccountTbls.SingleOrDefault(acc => acc.Email == email && acc.Status);
-            if (account != null)
+            var acc = _context.AccountTbls
+               .Where(acc => acc.Email == email)
+               .OrderByDescending(acc => acc.AccId)
+               .FirstOrDefault();
+            if (acc != null && acc.Status)
             {
                 return BadRequest(new { Susccess = false, Message = "Account was existed!" });
             }
