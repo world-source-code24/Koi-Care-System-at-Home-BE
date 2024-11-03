@@ -63,7 +63,7 @@ namespace KoiCareSystemAtHome.Controllers
             });
         }
 
-        [HttpPost("RefeshToken")]
+        [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken(TokenModel token)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
