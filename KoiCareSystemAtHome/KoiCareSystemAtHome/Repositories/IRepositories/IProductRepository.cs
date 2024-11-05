@@ -9,5 +9,7 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         Task<List<ProductsTbl>> GetAllProductsAsync();
         Task<List<ProductsTbl>> SearchByNameAsync(string name);
         Task<int> GetTotalProduct();
+
+        Task<bool> ChangeStockProduct(int orderId, bool status);
     }
 }

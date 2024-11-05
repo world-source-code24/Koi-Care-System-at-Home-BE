@@ -87,5 +87,22 @@ namespace KoiCareSystemAtHome.Repositories
         {
             return await _context.ProductsTbls.CountAsync(p => p.Status!=false);
         }
+
+        public async Task<bool> ChangeStockProduct(int orderId, bool status)
+        {
+            var lOrderDetails = await _context.OrderDetailsTbls.Where(o => o.OrderId == orderId).ToListAsync();
+            if (lOrderDetails.Count < 1) return false;
+            foreach (var o in lOrderDetails)
+            {
+                var pProduct = await _context.ProductsTbls.FirstOrDefaultAsync(p => p.ProductId == o.ProductId);
+
+                if (o.Quantity.HasValue && pProduct != null)
+                { if (status) pProduct.Stock -= o.Quantity.Value;
+                    else pProduct.Stock += o.Quantity.Value;
+                }
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

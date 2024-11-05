@@ -1,5 +1,7 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace KoiCareSystemAtHome.Repositories.IRepositories
@@ -12,5 +14,10 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         //List<OrderDTO> GetListOrder (int id);
 
         Task<List<OrdersTbl>> GetOrdersByAccId(int accId);
+
+        Task<bool> SetOrderStatus(int orderId, int status);
+
+        Task<OrdersTbl> GetOrder(int orderId);
+       
     }
 }

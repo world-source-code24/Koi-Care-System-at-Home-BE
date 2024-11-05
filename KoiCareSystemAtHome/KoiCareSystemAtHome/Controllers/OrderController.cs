@@ -67,6 +67,21 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
+        //[HttpGet("/api/Get-Order")]
+        //public async Task<IActionResult> GetOrder(int orderId)
+        //{
+        //    var order = await _orderRepository.GetOrder(orderId);
+        //    if (order == null)
+        //    {
+        //        return NotFound("Not found order");
+        //    }
+        //    else
+        //    {
+        //        return Ok(new { message = "success", status = true, order });
+        //    }
+        //}
+
+
         //[HttpPost("Create-Order-Without-Calculate-Money")]
         //public async Task<IActionResult> CreateOrder(int accID)
         //{
@@ -90,8 +105,7 @@ namespace KoiCareSystemAtHome.Controllers
             try
             {
                 var totalCart = await _cartRepository.GetUserCarts(accID);
-                var totalAmount = await _normalFunctionsRepository.TotalMoneyOfCarts(totalCart);
-                
+                var totalAmount = await _normalFunctionsRepository.TotalMoneyOfCarts(totalCart);                
                 var order = new OrdersTbl
                 {
                     AccId = accID,
@@ -99,10 +113,10 @@ namespace KoiCareSystemAtHome.Controllers
                     StatusOrder = AllEnum.OrderStatus.Pending.ToString(),
                     StatusPayment = AllEnum.StatusPayment.Unpaid.ToString(),
                     TotalAmount = totalAmount
-
                 };
                 _context.OrdersTbls.Add(order);
                 await _context.SaveChangesAsync();
+
                 foreach (var item in totalCart)
                 {
                     var product = await _context.ProductsTbls.FindAsync(item.ProductId);
@@ -124,19 +138,19 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        [HttpPut("/api/Update-Status-Payment")]
-        public async Task<IActionResult> UpdatePaidSuccess(int accID, int orderID)
-        {
-            var order = await _context.OrdersTbls
-                .Where(order => order.AccId == accID && order.OrderId == orderID)
-                .FirstOrDefaultAsync();
-            if (order == null) return NotFound("Not found this order");
-            order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
-            await _context.SaveChangesAsync();
-            return Ok(new { status = true, message = "Payment status updated to Paid." });
-        }
+        //[HttpPut("/api/Update-Status-Payment")]
+        //public async Task<IActionResult> UpdatePaidSuccess(int accID, int orderID)
+        //{ 
+        //    var order = await _context.OrdersTbls
+        //        .Where(order => order.AccId == accID && order.OrderId == orderID)
+        //        .FirstOrDefaultAsync();
+        //    if (order == null) return NotFound("Not found this order");
+        //    order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
+        //    await _context.SaveChangesAsync();
+        //    return Ok(new { status = true, message = "Payment status updated to Paid." });
+        //}
 
-        [HttpPut("/api/Update-Status-Payment-Latest")]
+        [HttpPut("/api/Update-Status-Payment")]
         public async Task<IActionResult> UpdatePaidSuccessLatest(int accID, int orderID)
         {
             var order = await _context.OrdersTbls
@@ -170,6 +184,13 @@ namespace KoiCareSystemAtHome.Controllers
                 return Ok(new { message = "No orders found for the specified category." });
             return Ok(orders);
         }
-
+            
+        [HttpPut("/api/Update-OrderStatus")]
+        public async Task<IActionResult> UpdateOrderStatus(int orderID, int status )
+        {
+            bool bCheck = await _orderRepository.SetOrderStatus(orderID, status);
+            if (bCheck== false) return NotFound("Not found this order");                        
+            return Ok(new { status = true, message = "Order status updated success." });
+        }
     }
 }

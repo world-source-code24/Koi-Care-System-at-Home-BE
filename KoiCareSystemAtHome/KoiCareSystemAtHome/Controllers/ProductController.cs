@@ -1,5 +1,6 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
+using KoiCareSystemAtHome.Repositories;
 using KoiCareSystemAtHome.Repositories.IRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,11 @@ namespace KoiCareSystemAtHome.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-        public ProductController(IProductRepository productRepository)
+        private readonly IOrderRepository _orderRepository;
+        public ProductController(IProductRepository productRepository, IOrderRepository orderRepository)
         {
             _productRepository = productRepository;
+            _orderRepository = orderRepository;
         }
         [HttpGet("get-all")]
         public async Task<IActionResult> GetProducts()
@@ -153,5 +156,16 @@ namespace KoiCareSystemAtHome.Controllers
 
         }
 
+        [HttpPut("Change-Stock")]
+        public async Task<IActionResult> EditStockProduct(int orderId)
+        {
+            var oOrder =_orderRepository.GetOrder(orderId).Result;
+            if (oOrder == null) return NotFound(new {message ="Not found this order"});
+            // Neu nhu nguoi dung tra hang thi return stock
+            bool bStatus = !oOrder.StatusPayment.Equals(AllEnum.StatusPayment.Refund.ToString()); 
+            bool bCheck = await _productRepository.ChangeStockProduct(orderId, bStatus);
+            if (bCheck) return Ok(new { message = "success" });
+            else return NotFound(new { message = "Can't found orderDetails" });
+        }
     }
 }

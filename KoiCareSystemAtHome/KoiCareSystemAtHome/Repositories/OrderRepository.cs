@@ -1,8 +1,10 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Extensions;
 using System.Text;
 
 namespace KoiCareSystemAtHome.Repositories
@@ -21,26 +23,7 @@ namespace KoiCareSystemAtHome.Repositories
         }
 
 
-        //public List<OrderDTO> GetListOrder(int id)
-        //{
-        //    var orderDb = _context.OrdersTbls.Where(o => o.Equals(id)).ToList();
 
-        //    // Check dk
-        //    if (orderDb.Count > 0) { return null; }
-
-        //    foreach (var orderStore in orderDb)
-        //    {
-        //        OrderDTO order = new OrderDTO
-        //        {
-        //            AccId = id,
-        //            Date = DateOnly.FromDateTime(DateTime.Now),
-        //            StatusOrder = AllEnum.OrderStatus.Pending.ToString(),
-        //            StatusPayment = AllEnum.StatusPayment.Unpaid.ToString(),
-        //            TotalAmount = totalAmount
-
-        //        };
-        //    }
-        //}
 
         public List<int> GetOrderId(int id)
         {
@@ -86,6 +69,42 @@ namespace KoiCareSystemAtHome.Repositories
                 // Log the exception to help track down issues
                 return (false, -1);
             }
+        }
+
+        public async Task<bool> SetOrderStatus (int orderId , int status)
+        {
+            var order = await _context.OrdersTbls.FirstOrDefaultAsync(o => o.OrderId == orderId);
+                    if (order == null) return false;
+            if (status < 1 || status > 5) return false;
+            if (status == 1)
+                order.StatusOrder = AllEnum.OrderStatus.Processing.ToString();
+            order.StatusPayment = AllEnum.StatusPayment.Unpaid.ToString();
+            if (status == 2)
+                order.StatusOrder = AllEnum.OrderStatus.Shiping.ToString();
+            order.StatusPayment = AllEnum.StatusPayment.Unpaid.ToString();
+            if (status == 3)
+            {
+                order.StatusOrder = AllEnum.OrderStatus.Completed.ToString();
+                order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
+            }
+
+            if (status == 4)
+                order.StatusOrder = AllEnum.OrderStatus.ShipCompleted.GetDisplayName();
+            order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
+            if (status == 5)
+            {
+                order.StatusOrder = AllEnum.OrderStatus.Cancelled.ToString();
+                order.StatusPayment = AllEnum.StatusPayment.Refund.ToString();
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<OrdersTbl> GetOrder(int orderId)
+        {
+            var order = await _context.OrdersTbls.Where(o => o.OrderId == orderId).FirstOrDefaultAsync();
+            return order;
         }
     }
 }
