@@ -105,6 +105,7 @@ namespace KoiCareSystemAtHome.Controllers
             try
             {
                 var totalCart = await _cartRepository.GetUserCarts(accID);
+                if (totalCart == null) return BadRequest(new { message = "Cart empty" });
                 var totalAmount = await _normalFunctionsRepository.TotalMoneyOfCarts(totalCart);                
                 var order = new OrdersTbl
                 {
