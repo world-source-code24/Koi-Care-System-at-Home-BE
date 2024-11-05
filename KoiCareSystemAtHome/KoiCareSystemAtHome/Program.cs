@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen();
 
 //Database Services
 builder.Services.AddDbContext<KoicareathomeContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("KhoiDB")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareSystem")));
 
 //Service Token
 builder.Services.AddScoped<TokenProvider>();
