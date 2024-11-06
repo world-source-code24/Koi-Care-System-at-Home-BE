@@ -22,9 +22,6 @@ namespace KoiCareSystemAtHome.Repositories
             _cartRepository = cartRepository;
         }
 
-
-
-
         public List<int> GetOrderId(int id)
         {
             var orderTbl = _context.OrdersTbls.Select(o => o.OrderId).Where(o => o.Equals(id)).ToList();

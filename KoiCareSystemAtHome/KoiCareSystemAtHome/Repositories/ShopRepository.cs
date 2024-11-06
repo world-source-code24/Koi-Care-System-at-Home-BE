@@ -19,6 +19,8 @@ namespace KoiCareSystemAtHome.Repositories
                 Address = s.Address,
                 Name = s.Name,
                 Phone = s.Phone,
+                Email = s.Email,
+                ShopCode = s.ShopCode,
             }).ToListAsync();
         }
 
@@ -30,6 +32,8 @@ namespace KoiCareSystemAtHome.Repositories
                 Address = s.Address,
                 Name = s.Name,
                 Phone = s.Phone,
+                Email= s.Email,
+                ShopCode = s.ShopCode,
             }).SingleOrDefaultAsync();
         }
 

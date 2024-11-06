@@ -60,6 +60,8 @@ namespace KoiCareSystemAtHome.Controllers
                     Name = shop.Name,
                     Address = shop.Address,
                     Phone = shop.Phone,
+                    Email = shop.Email,
+                    ShopCode = shop.ShopCode,
                 };
                 await _shopRepository.AddAsync(newShop);
                 return CreatedAtAction(nameof(GetByShopId), new {shopId = newShop.ShopId}, newShop);
@@ -88,6 +90,8 @@ namespace KoiCareSystemAtHome.Controllers
                 updateShop.Address = shop.Address;
                 updateShop.Phone = shop.Phone;
                 updateShop.Name = shop.Name;
+                updateShop.Email = shop.Email;
+                updateShop.ShopCode = shop.ShopCode;
                 await _shopRepository.UpdateAsync(updateShop);
                 return Ok(new {success = true, message = "Update successfully!!", shop = updateShop});
             }

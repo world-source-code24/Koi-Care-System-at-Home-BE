@@ -13,5 +13,9 @@ public partial class ShopsTbl
 
     public string? Address { get; set; }
 
+    public string? ShopCode { get; set; }
+
+    public string? Email { get; set; }
+
     public virtual ICollection<ProductsTbl> ProductsTbls { get; set; } = new List<ProductsTbl>();
 }
