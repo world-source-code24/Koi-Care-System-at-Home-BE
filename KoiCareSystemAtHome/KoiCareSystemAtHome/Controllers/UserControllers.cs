@@ -33,50 +33,6 @@ namespace KoiCareSystemAtHome.Controllers
             _shopRepository = shopRepository;
         }
 
-        [HttpPost("LoginShop")]
-        public async Task<IActionResult> Login([FromBody] LoginShopDTO login)
-        {
-            if (login == null)
-            {
-                return BadRequest(new { Success = false, Message = "Email and Password can not blank!" });
-            }
-            var acc = _context.AccountTbls
-                .Where(acc => acc.Email == login.Email)
-                .OrderByDescending(acc => acc.AccId)
-                .FirstOrDefault();
-            if (acc == null || !acc.Status)
-            {
-                return BadRequest(new { Success = false, Message = "Your account not exist!" });
-            }
-            if (acc.Email != login.Email)
-            {
-                return BadRequest(new { Success = false, Message = "Wrong Email!" });
-            }
-            if (acc.Password != login.Password)
-            {
-                return BadRequest(new { Success = false, Message = "Wrong Password!" });
-            }
-
-            var shopExists = await _shopRepository.GetShopByCode(login.shopCode);
-
-            if (shopExists == null)
-            {
-                return BadRequest(new { Success = false, Message = "Wrong Shop Code!" });
-            }
-            int shopId = shopExists.ShopId;
-            //Tao Token
-            TokenModel token = await _tokenProvider.GenerateToken(acc);
-
-            //Neu khong co loi sai thi thuc hien tra ve Token
-            return Ok(new
-            {
-                Success = true,
-                Message = "Login Successfully",
-                shopId = shopId,
-                Data = token
-            });
-        }
-
         [HttpPost("Login")]
         public async Task<IActionResult> LoginShop([FromBody] LoginModels login)
         {

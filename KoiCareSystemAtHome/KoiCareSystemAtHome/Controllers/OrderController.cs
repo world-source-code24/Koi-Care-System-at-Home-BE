@@ -41,13 +41,6 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
-        [HttpGet("OrderList")]
-        public async Task<ActionResult<List<OrdersTbl>>> GetOrderList()
-        {
-            var orderList = await _orderRepository.GetAllOrder();
-            return Ok(new { order = orderList });
-        }
-
         [HttpGet("GetAll/{accId}")]
         public async Task<IActionResult> GetOrdersByAccId(int accId)
         {
@@ -118,7 +111,7 @@ namespace KoiCareSystemAtHome.Controllers
                 {
                     AccId = accID,
                     Date = DateOnly.FromDateTime(DateTime.Now),
-                    StatusOrder = AllEnum.OrderStatus.Pending.ToString(),
+                    StatusOrder = AllEnum.OrderStatus.Processing.ToString(),
                     StatusPayment = AllEnum.StatusPayment.Unpaid.ToString(),
                     TotalAmount = totalAmount
                 };
