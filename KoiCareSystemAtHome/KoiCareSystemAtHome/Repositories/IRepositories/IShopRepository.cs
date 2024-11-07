@@ -6,6 +6,7 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
     {
         Task<ShopsTbl> GetByShopIdAsync(int shopId);
         Task<List<ShopsTbl>> GetAllShopsAsync();
+        Task <ShopsTbl> GetShopByCode(string code);
         Task<int> GetTotalShops();
     }
 }

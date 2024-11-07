@@ -41,6 +41,13 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
 
+        [HttpGet("OrderList")]
+        public async Task<ActionResult<List<OrdersTbl>>> GetOrderList()
+        {
+            var orderList = await _orderRepository.GetAllOrder();
+            return Ok(new { order = orderList });
+        }
+
         [HttpGet("GetAll/{accId}")]
         public async Task<IActionResult> GetOrdersByAccId(int accId)
         {

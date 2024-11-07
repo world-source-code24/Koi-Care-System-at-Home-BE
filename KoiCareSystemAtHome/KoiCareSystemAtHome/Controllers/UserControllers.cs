@@ -23,16 +23,18 @@ namespace KoiCareSystemAtHome.Controllers
         private readonly TokenProvider _tokenProvider;
         private readonly IConfiguration _configuration;
         private readonly IAccountRepository _accountRepository;
-        public UserController(KoicareathomeContext context, TokenProvider tokenProvider, IConfiguration configuration, IAccountRepository accountRepository)
+        private readonly IShopRepository _shopRepository;
+        public UserController(KoicareathomeContext context, IShopRepository shopRepository, TokenProvider tokenProvider, IConfiguration configuration, IAccountRepository accountRepository)
         {
             _context = context;
             _tokenProvider = tokenProvider;
             _configuration = configuration;
             _accountRepository = accountRepository;
+            _shopRepository = shopRepository;
         }
 
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginModels login)
+        [HttpPost("LoginShop")]
+        public async Task<IActionResult> Login([FromBody] LoginShopDTO login)
         {
             if (login == null)
             {
@@ -54,6 +56,51 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return BadRequest(new { Success = false, Message = "Wrong Password!" });
             }
+
+            var shopExists = await _shopRepository.GetShopByCode(login.shopCode);
+
+            if (shopExists == null)
+            {
+                return BadRequest(new { Success = false, Message = "Wrong Shop Code!" });
+            }
+            int shopId = shopExists.ShopId;
+            //Tao Token
+            TokenModel token = await _tokenProvider.GenerateToken(acc);
+
+            //Neu khong co loi sai thi thuc hien tra ve Token
+            return Ok(new
+            {
+                Success = true,
+                Message = "Login Successfully",
+                shopId = shopId,
+                Data = token
+            });
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginShop([FromBody] LoginModels login)
+        {
+            if (login == null)
+            {
+                return BadRequest(new { Success = false, Message = "Email and Password can not blank!" });
+            }
+            var acc = _context.AccountTbls
+                .Where(acc => acc.Email == login.Email)
+                .OrderByDescending(acc => acc.AccId)
+                .FirstOrDefault();
+            if (acc == null || !acc.Status)
+            {
+                return BadRequest(new { Success = false, Message = "Your account not exist!" });
+            }
+            if (acc.Email != login.Email)
+            {
+                return BadRequest(new { Success = false, Message = "Wrong Email!" });
+            }
+            if (acc.Password != login.Password)
+            {
+                return BadRequest(new { Success = false, Message = "Wrong Password!" });
+            }
+
             //Tao Token
             TokenModel token = await _tokenProvider.GenerateToken(acc);
 

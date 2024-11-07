@@ -68,10 +68,10 @@ namespace KoiCareSystemAtHome.Repositories
             }
         }
 
-        public async Task<bool> SetOrderStatus (int orderId , int status)
+        public async Task<bool> SetOrderStatus(int orderId, int status)
         {
             var order = await _context.OrdersTbls.FirstOrDefaultAsync(o => o.OrderId == orderId);
-                    if (order == null) return false;
+            if (order == null) return false;
             if (status < 1 || status > 5) return false;
             if (status == 1)
                 order.StatusOrder = AllEnum.OrderStatus.Processing.ToString();
@@ -84,7 +84,6 @@ namespace KoiCareSystemAtHome.Repositories
                 order.StatusOrder = AllEnum.OrderStatus.Completed.ToString();
                 order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
             }
-
             if (status == 4)
                 order.StatusOrder = AllEnum.OrderStatus.ShipCompleted.GetDisplayName();
             order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
@@ -102,6 +101,11 @@ namespace KoiCareSystemAtHome.Repositories
         {
             var order = await _context.OrdersTbls.Where(o => o.OrderId == orderId).FirstOrDefaultAsync();
             return order;
+        }
+
+        public async Task<List<OrdersTbl>> GetAllOrder()
+        {
+            return await _context.OrdersTbls.ToListAsync();
         }
     }
 }

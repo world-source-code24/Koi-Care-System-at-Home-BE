@@ -18,6 +18,8 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         Task<bool> SetOrderStatus(int orderId, int status);
 
         Task<OrdersTbl> GetOrder(int orderId);
+
+        Task<List<OrdersTbl>> GetAllOrder();
        
     }
 }

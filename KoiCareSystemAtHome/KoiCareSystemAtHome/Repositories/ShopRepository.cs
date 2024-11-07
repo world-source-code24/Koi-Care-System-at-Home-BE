@@ -37,6 +37,12 @@ namespace KoiCareSystemAtHome.Repositories
             }).SingleOrDefaultAsync();
         }
 
+        public async Task<ShopsTbl> GetShopByCode(string code)
+        {
+            var shop = await _context.ShopsTbls.FirstOrDefaultAsync(s => s.ShopCode.Equals(code));
+            return shop;
+        }
+
         public async Task<int> GetTotalShops()
         {
             return await _context.ShopsTbls.CountAsync();
