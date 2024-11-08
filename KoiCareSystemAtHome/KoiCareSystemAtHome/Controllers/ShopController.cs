@@ -27,6 +27,17 @@ namespace KoiCareSystemAtHome.Controllers
             int totalShops = await _shopRepository.GetTotalShops();
             return Ok(new {success = true, shops = shops, total = totalShops});
         }
+        [HttpGet("verifyShop")]
+        public async Task<IActionResult> VerifyShop(string shopCode)
+        {
+            var shopExist = await _shopRepository.GetShopByCode(shopCode);
+            if (shopExist == null)
+            {
+                return BadRequest(new {message = "Shop is not exist!"});
+            }
+            int shopId = shopExist.ShopId;
+            return Ok(new {success = true, id = shopId});
+        }
 
         [HttpGet("get-byId{shopId}")]
         public async Task<IActionResult> GetByShopId(int shopId)
