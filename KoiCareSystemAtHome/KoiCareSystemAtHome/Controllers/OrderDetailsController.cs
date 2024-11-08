@@ -26,6 +26,7 @@ namespace KoiCareSystemAtHome.Controllers
         public async Task<ActionResult<IEnumerable<List<OrderDetailsDTO>>>> GetAllOrderDetails(int orderId)
         {
             var orderDetailList = await _context.OrderDetailsTbls
+                .Include(od => od.Product )
                 .Where(od => od.OrderId == orderId)
                 .ToListAsync();
             if (orderDetailList == null) return NotFound();

@@ -43,10 +43,9 @@ namespace KoiCareSystemAtHome.Repositories
                 return true;
             }
             catch (Exception ex)
-            {               
+            {
                 return false;
             }
         }
-
     }
 }

@@ -162,7 +162,7 @@ namespace KoiCareSystemAtHome.Controllers
             var oOrder =_orderRepository.GetOrder(orderId).Result;
             if (oOrder == null) return NotFound(new {message ="Not found this order"});
             // Neu nhu nguoi dung tra hang thi return stock
-            bool bStatus = !oOrder.StatusPayment.Equals(AllEnum.StatusPayment.Refund.ToString()); 
+            bool bStatus = !oOrder.StatusPayment.Equals(AllEnum.StatusPayment.Cancelled.ToString()); 
             bool bCheck = await _productRepository.ChangeStockProduct(orderId, bStatus);
             if (bCheck) return Ok(new { message = "success" });
             else return NotFound(new { message = "Can't found orderDetails" });

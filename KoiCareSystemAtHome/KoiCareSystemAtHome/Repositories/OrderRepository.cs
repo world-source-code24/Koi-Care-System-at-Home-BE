@@ -70,27 +70,33 @@ namespace KoiCareSystemAtHome.Repositories
 
         public async Task<bool> SetOrderStatus(int orderId, int status)
         {
-            var order = await _context.OrdersTbls.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            var order = await GetOrder(orderId);
             if (order == null) return false;
             if (status < 1 || status > 5) return false;
             if (status == 1)
+            {
                 order.StatusOrder = AllEnum.OrderStatus.Processing.ToString();
-            order.StatusPayment = AllEnum.StatusPayment.Unpaid.ToString();
+                
+            }
             if (status == 2)
+            {
                 order.StatusOrder = AllEnum.OrderStatus.Shiping.ToString();
-            order.StatusPayment = AllEnum.StatusPayment.Unpaid.ToString();
+                
+            }
             if (status == 3)
             {
-                order.StatusOrder = AllEnum.OrderStatus.Completed.ToString();
-                order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
+                order.StatusOrder = AllEnum.OrderStatus.ShipCompleted.ToString();
             }
             if (status == 4)
-                order.StatusOrder = AllEnum.OrderStatus.ShipCompleted.GetDisplayName();
-            order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
+            {
+                order.StatusOrder = AllEnum.OrderStatus.Completed.ToString();
+                
+            }
+            
             if (status == 5)
             {
                 order.StatusOrder = AllEnum.OrderStatus.Cancelled.ToString();
-                order.StatusPayment = AllEnum.StatusPayment.Refund.ToString();
+                order.StatusPayment = AllEnum.StatusPayment.Cancelled.ToString();
             }
 
             await _context.SaveChangesAsync();
