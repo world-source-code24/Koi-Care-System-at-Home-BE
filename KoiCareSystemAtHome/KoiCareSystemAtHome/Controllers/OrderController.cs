@@ -53,6 +53,13 @@ namespace KoiCareSystemAtHome.Controllers
 
         }
 
+        [HttpGet("GetOrders")]
+        public async Task<IActionResult> GetOrders()
+        {
+            var orders = await _context.OrdersTbls.ToListAsync();
+            return Ok(new {status = true, orders = orders});
+        }
+
         [HttpGet("/api/Get-Order")]
         public async Task<ActionResult<IEnumerable<OrderDTO>>> GetOrder(int orderId)
         {
@@ -144,7 +151,7 @@ namespace KoiCareSystemAtHome.Controllers
                 {
                     AccId = accID,
                     Date = DateOnly.FromDateTime(DateTime.Now),
-                    StatusOrder = AllEnum.OrderStatus.Processing.ToString(),
+                    StatusOrder = AllEnum.OrderStatus.Pending.ToString(),
                     StatusPayment = AllEnum.StatusPayment.Unpaid.ToString(),
                     TotalAmount = totalAmount
                 };
