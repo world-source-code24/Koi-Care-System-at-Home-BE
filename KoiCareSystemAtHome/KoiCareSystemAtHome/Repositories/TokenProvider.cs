@@ -42,7 +42,7 @@ namespace KoiCareSystemAtHome.Repositories
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(10), // Set expiry time
+                Expires = DateTime.UtcNow.AddMinutes(30), // Set expiry time
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256)
             };
 
