@@ -1,9 +1,10 @@
-﻿namespace KoiCareSystemAtHome.Repositories.IRepositories
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace KoiCareSystemAtHome.Repositories.IRepositories
 {
     public interface ICalculatorRepository
     {
-        Task<float> foodCalculator(int numberKoi, float ratioFood, float weightKoi);
-        Task<float> saltCalculator(float volume, float ratioSalt);
-        Task<float> singleKoiFoodCalculator(float length, float weight, float ratioFood);
+        Task<decimal> foodCalculator(int pondId, string growthLevel, decimal downTemp, decimal upTemp);
+        Task<string> adviceFood(string growthLevel);
     }
 }
