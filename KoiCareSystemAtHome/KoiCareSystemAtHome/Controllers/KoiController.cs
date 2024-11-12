@@ -104,10 +104,10 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { message = "Update Successfully!" });
         }
 
-        [HttpPut("edit")]
+        [HttpPut("edit/pond/{pondId}/[controller]/{koiId}")]
         public async Task<IActionResult> EditKoi(int KoiId, KoiDTO koi, int pondId)
         {
-            var updateKoi = await _context.KoisTbls.FindAsync(koiId);
+            var updateKoi = await _context.KoisTbls.FindAsync(KoiId);
             if (updateKoi == null) return NotFound(new { message = "Can't find Koi to Update" });
 
             //Put new update information to User
