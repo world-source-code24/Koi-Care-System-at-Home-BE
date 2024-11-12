@@ -19,6 +19,8 @@ public partial class KoicareathomeContext : DbContext
 
     public virtual DbSet<CartTbl> CartTbls { get; set; }
 
+    public virtual DbSet<FoodCalculateParameter> FoodCalculateParameters { get; set; }
+
     public virtual DbSet<KoiGrowthChartsTbl> KoiGrowthChartsTbls { get; set; }
 
     public virtual DbSet<KoisTbl> KoisTbls { get; set; }
@@ -39,11 +41,12 @@ public partial class KoicareathomeContext : DbContext
 
     public virtual DbSet<ShopsTbl> ShopsTbls { get; set; }
 
+    public virtual DbSet<TemperatureRange> TemperatureRanges { get; set; }
+
     public virtual DbSet<WaterParametersTbl> WaterParametersTbls { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=koicaresever.database.windows.net,1433;Initial Catalog=Koicareathome;Persist Security Info=True;User ID=mysql;Password=minh0123456789.,;Trust Server Certificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=koicaresever.database.windows.net,1433;Initial Catalog=koicareathome;Persist Security Info=True;User ID=mysql;Password=minh0123456789.,;Trust Server Certificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -110,6 +113,31 @@ public partial class KoicareathomeContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.CartTbls)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK__cart_tbl__produc__7D439ABD");
+        });
+
+        modelBuilder.Entity<FoodCalculateParameter>(entity =>
+        {
+            entity.HasKey(e => e.ParameterId).HasName("PK__FoodCalc__F762666B5436D921");
+
+            entity.ToTable("FoodCalculateParameter");
+
+            entity.Property(e => e.ParameterId)
+                .ValueGeneratedNever()
+                .HasColumnName("parameterId");
+            entity.Property(e => e.Advice)
+                .HasColumnType("text")
+                .HasColumnName("advice");
+            entity.Property(e => e.Level)
+                .HasMaxLength(255)
+                .HasColumnName("level");
+            entity.Property(e => e.MultiplierBetween).HasColumnName("multiplierBetween");
+            entity.Property(e => e.MultiplierLower).HasColumnName("multiplierLower");
+            entity.Property(e => e.MultiplierUpper).HasColumnName("multiplierUpper");
+            entity.Property(e => e.RangeId).HasColumnName("rangeId");
+
+            entity.HasOne(d => d.Range).WithMany(p => p.FoodCalculateParameters)
+                .HasForeignKey(d => d.RangeId)
+                .HasConstraintName("FK__FoodCalcu__range__2CF2ADDF");
         });
 
         modelBuilder.Entity<KoiGrowthChartsTbl>(entity =>
@@ -379,6 +407,23 @@ public partial class KoicareathomeContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("shopCode");
+        });
+
+        modelBuilder.Entity<TemperatureRange>(entity =>
+        {
+            entity.HasKey(e => e.RangeId).HasName("PK__Temperat__E28BCBF5F9625F05");
+
+            entity.ToTable("TemperatureRange");
+
+            entity.Property(e => e.RangeId)
+                .ValueGeneratedNever()
+                .HasColumnName("rangeId");
+            entity.Property(e => e.MaxTemp)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("maxTemp");
+            entity.Property(e => e.MinTemp)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("minTemp");
         });
 
         modelBuilder.Entity<WaterParametersTbl>(entity =>
