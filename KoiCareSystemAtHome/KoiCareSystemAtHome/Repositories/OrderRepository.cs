@@ -72,29 +72,38 @@ namespace KoiCareSystemAtHome.Repositories
         2 - unpaid va shipping
         3 - completed va paid
         4 - ship completed paid
-        5 - cancelled va refund
+        5 - cancelled 
          */
         public async Task<bool> SetOrderStatus(int orderId, int status)
         {
-            var order = await _context.OrdersTbls.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            var order = await GetOrder(orderId);
             if (order == null) return false;
-            if (status < 1 || status > 3) return false;
+            if (status < 1 || status > 5) return false;
             if (status == 1)
+            {
                 order.StatusOrder = AllEnum.OrderStatus.Processing.ToString();
-            order.StatusPayment = AllEnum.StatusPayment.Unpaid.ToString();
+
+            }
             if (status == 2)
-                order.StatusOrder = AllEnum.OrderStatus.Pending.ToString();
-            order.StatusPayment = AllEnum.StatusPayment.Unpaid.ToString();
+            {
+                order.StatusOrder = AllEnum.OrderStatus.Shiping.ToString();
+
+            }
             if (status == 3)
             {
-                order.StatusOrder = AllEnum.OrderStatus.Completed.ToString();
-                order.StatusPayment = AllEnum.StatusPayment.Paid.ToString();
+                order.StatusOrder = AllEnum.OrderStatus.ShipCompleted.ToString();
             }
-            //if (status == 4)
-            //{
-            //    order.StatusOrder = AllEnum.OrderStatus.Cancelled.ToString();
-            //    order.StatusPayment = AllEnum.StatusPayment.Refund.ToString();
-            //}
+            if (status == 4)
+            {
+                order.StatusOrder = AllEnum.OrderStatus.Completed.ToString();
+
+            }
+
+            if (status == 5)
+            {
+                order.StatusOrder = AllEnum.OrderStatus.Cancelled.ToString();
+                order.StatusPayment = AllEnum.StatusPayment.Cancelled.ToString();
+            }
 
             await _context.SaveChangesAsync();
             return true;

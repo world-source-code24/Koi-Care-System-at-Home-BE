@@ -20,7 +20,7 @@ namespace KoiCareSystemAtHome.Repositories
         {
             Paid,
             Unpaid,
-            Refund
+            Cancelled
         }
 
         public enum UserRole
