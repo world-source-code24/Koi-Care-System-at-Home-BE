@@ -25,6 +25,20 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new {recommendFood = result, adive = advie});
         }
 
+        [HttpGet("parameter")]
+        public async Task<IActionResult> GetFoodParameter()
+        {
+            var parameterList = _koicareathomeContext.FoodCalculateParameters;
+            return Ok(parameterList);
+        }
+
+        [HttpGet("rangeTemp")]
+        public async Task<IActionResult> GetRangeTemp()
+        {
+            var temperatureRanges = _koicareathomeContext.TemperatureRanges;
+            return Ok(temperatureRanges);
+        }
+
         [HttpPut("parameter")]
         public async Task<IActionResult> FoodParameter(int id, float multiplierLower, float multiplierBetween, float multiplierUpper, string advice)
         {
