@@ -104,6 +104,28 @@ namespace KoiCareSystemAtHome.Controllers
             return Ok(new { message = "Update Successfully!" });
         }
 
+        [HttpPut("edit")]
+        public async Task<IActionResult> EditKoi(int KoiId, KoiDTO koi, int pondId)
+        {
+            var updateKoi = await _context.KoisTbls.FindAsync(koiId);
+            if (updateKoi == null) return NotFound(new { message = "Can't find Koi to Update" });
+
+            //Put new update information to User
+            updateKoi.Image = koi.Image;
+            updateKoi.Name = koi.Name;
+            updateKoi.Age = koi.Age;
+            updateKoi.Physique = koi.Physique;
+            updateKoi.Length = koi.Length;
+            updateKoi.Weight = koi.Weight;
+            updateKoi.Breed = koi.Breed;
+            updateKoi.Sex = koi.Sex;
+            updateKoi.PondId = pondId;
+
+            await _koiRepository.UpdateAsync(updateKoi);
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Update Successfully!" });
+        }
+
         [HttpDelete("[controller]/{koiId}")]
         public async Task<IActionResult> DeleteKoi(int koiId)
         {
