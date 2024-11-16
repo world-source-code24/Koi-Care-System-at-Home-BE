@@ -200,7 +200,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 var email = new MimeMessage();
                 var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); // Get current timestamp in seconds
-                var verificationUrl = $"http://localhost:5173/verify/{Base64Encode(receiveEmail)}/{timestamp}"; // Append timestamp
+                var verificationUrl = $"https://koicareathome.azurewebsites.net/verify/{Base64Encode(receiveEmail)}/{timestamp}"; // Append timestamp
                 email.From.Add(new MailboxAddress("KoiCare", _configuration["EmailSettings:FromAddress"])); // Use app settings for flexibility
                 email.To.Add(new MailboxAddress("Receiver", receiveEmail));
                 email.Subject = "Testing out email sending";
