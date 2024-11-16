@@ -56,7 +56,7 @@ namespace KoiCareSystemAtHome.Controllers
                         bool isSuccess = await _accountRepository.BuyMembership(accId);
                         if (isSuccess)
                         {
-                            return Redirect("https://koicareathome.azurewebsites.net/paymentSuccess");
+                            return Redirect("https://koicareathome.azurewebsites.net/payment");
                         }
                     }
                 }
