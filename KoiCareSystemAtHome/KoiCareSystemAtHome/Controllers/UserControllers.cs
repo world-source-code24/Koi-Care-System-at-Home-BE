@@ -226,7 +226,6 @@ namespace KoiCareSystemAtHome.Controllers
                     // Disconnect safely
                     await smtp.DisconnectAsync(true);
                 }
-
                 return Ok(new { success = true, message = "Email sent successfully", code = code });
             }
             catch (Exception ex)

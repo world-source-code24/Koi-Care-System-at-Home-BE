@@ -7,7 +7,7 @@ public partial class KoiGrowthChartsTbl
 {
     public int ChartId { get; set; }
 
-    public DateOnly Date { get; set; }
+    public DateTime? Date { get; set; }
 
     public decimal Length { get; set; }
 

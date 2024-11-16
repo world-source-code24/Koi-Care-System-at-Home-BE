@@ -80,7 +80,7 @@ namespace KoiCareSystemAtHome.Repositories
         {
             var chart = new KoiGrowthChartsTbl
             {
-                Date = DateOnly.FromDateTime(DateTime.Now),
+                Date = DateTime.Now,
                 Length = kois.Length,
                 Weight = kois.Weight,
                 HealthStatus = kois.Physique,

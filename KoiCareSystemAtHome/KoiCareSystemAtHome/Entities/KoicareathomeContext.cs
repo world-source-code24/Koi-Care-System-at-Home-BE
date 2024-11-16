@@ -46,6 +46,7 @@ public partial class KoicareathomeContext : DbContext
     public virtual DbSet<WaterParametersTbl> WaterParametersTbls { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=koicaresever.database.windows.net,1433;Initial Catalog=koicareathome;Persist Security Info=True;User ID=mysql;Password=minh0123456789.,;Trust Server Certificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -147,7 +148,9 @@ public partial class KoicareathomeContext : DbContext
             entity.ToTable("koi_growth_charts_tbl");
 
             entity.Property(e => e.ChartId).HasColumnName("chart_id");
-            entity.Property(e => e.Date).HasColumnName("date");
+            entity.Property(e => e.Date)
+                .HasColumnType("datetime")
+                .HasColumnName("date");
             entity.Property(e => e.HealthStatus)
                 .HasMaxLength(20)
                 .IsUnicode(false)
@@ -172,7 +175,9 @@ public partial class KoicareathomeContext : DbContext
             entity.ToTable("kois_tbl");
 
             entity.Property(e => e.KoiId).HasColumnName("koiId");
-            entity.Property(e => e.Age).HasColumnName("age");
+            entity.Property(e => e.Age)
+                .HasColumnType("datetime")
+                .HasColumnName("age");
             entity.Property(e => e.Breed)
                 .HasMaxLength(50)
                 .HasColumnName("breed");
@@ -325,7 +330,6 @@ public partial class KoicareathomeContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("category");
             entity.Property(e => e.Image)
-                .HasMaxLength(200)
                 .IsUnicode(false)
                 .HasColumnName("image");
             entity.Property(e => e.Name)

@@ -13,7 +13,7 @@ public partial class KoisTbl
 
     public string? Physique { get; set; }
 
-    public int Age { get; set; }
+    public DateTime? Age { get; set; }
 
     public decimal Length { get; set; }
 
