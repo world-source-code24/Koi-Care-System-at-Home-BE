@@ -166,7 +166,7 @@ namespace KoiCareSystemAtHome.Controllers
             {
                 return BadRequest(new { Susccess = false, Message = "Account was existed!" });
             }
-            if (_context.AccountTbls.SingleOrDefault(acc => acc.Phone == phone  && acc.Status) != null)
+            if (_context.AccountTbls.SingleOrDefault(acc => acc.Phone == phone && acc.Status) != null)
             {
                 return BadRequest(new { Susccess = false, Message = "Phone was existed!" });
             }
@@ -199,14 +199,17 @@ namespace KoiCareSystemAtHome.Controllers
             try
             {
                 var email = new MimeMessage();
+                var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); // Get current timestamp in seconds
+                var verificationUrl = $"http://localhost:5173/verify/{Base64Encode(receiveEmail)}/{timestamp}"; // Append timestamp
                 email.From.Add(new MailboxAddress("KoiCare", _configuration["EmailSettings:FromAddress"])); // Use app settings for flexibility
                 email.To.Add(new MailboxAddress("Receiver", receiveEmail));
                 email.Subject = "Testing out email sending";
-                Random random = new Random();
-                var code = random.Next(100000, 1000000).ToString();
-                email.Body = new TextPart(MimeKit.Text.TextFormat.Plain)
+
+                email.Subject = "Verify Your Email";
+                email.Body = new TextPart("html")
                 {
-                    Text = "Use this code to verify email: " + code
+                    Text = $"<h2>Verify Your Email</h2><p>Click the button below to verify your email:</p>" +
+                           $"<a href='{verificationUrl}' style='padding: 10px; background-color: #4CAF50; color: white; text-decoration: none;'>Verify Email</a>"
                 };
 
                 var smtpHost = _configuration["EmailSettings:SmtpServer"];
@@ -227,7 +230,7 @@ namespace KoiCareSystemAtHome.Controllers
                     await smtp.DisconnectAsync(true);
                 }
 
-                return Ok(new { success = true, message = "Email sent successfully", code = code });
+                return Ok(new { success = true, message = "Email sent successfully" });
             }
             catch (Exception ex)
             {
@@ -236,19 +239,46 @@ namespace KoiCareSystemAtHome.Controllers
             }
         }
         [HttpPut]
-        public async Task<IActionResult> verifyAccount(int userCode, int verifyCode, string email)
+        public async Task<IActionResult> verifyAccount(string email)
         {
-            var acc = await _context.AccountTbls.OrderByDescending(acc => acc.AccId).FirstOrDefaultAsync(acc => acc.Email == email);
+            // Decode the Base64 email
+            string decodedEmail;
+            try
+            {
+                decodedEmail = DecodeBase64(email); // Decode Base64 encoded email
+            }
+            catch (FormatException)
+            {
+                // Handle invalid Base64 format
+                return BadRequest("Invalid email format.");
+            }
+
+            // Query the account based on the decoded email
+            var acc = await _context.AccountTbls
+                        .Where(acc => acc.Status == false && acc.Email == decodedEmail)
+                        .OrderByDescending(acc => acc.AccId)
+                        .FirstOrDefaultAsync();
+
             if (acc != null)
             {
-                if (userCode == verifyCode)
-                {
-                    acc.Status = true;
-                    await _context.SaveChangesAsync();
-                    return Ok(new { success = true });
-                }
+                acc.Status = true;
+                await _context.SaveChangesAsync();
+                return Ok(new { success = true });
             }
-            return BadRequest();
+
+            return BadRequest("Account not found or already verified.");
+        }
+
+        private string DecodeBase64(string encodedString)
+        {
+            byte[] data = Convert.FromBase64String(encodedString);
+            return System.Text.Encoding.UTF8.GetString(data);
+        }
+
+        private static string Base64Encode(string plainText)
+        {
+            byte[] textBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(textBytes);
         }
     }
 }
