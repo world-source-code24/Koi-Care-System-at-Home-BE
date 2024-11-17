@@ -213,7 +213,7 @@ namespace KoiCareSystemAtHome.Repositories
 
         public async Task UpdateAndCheckAllUserRole()
         {
-            var expiredMemberships = _context.AccountTbls.Where(acc => acc.Role.Equals("member", StringComparison.OrdinalIgnoreCase)
+            var expiredMemberships = _context.AccountTbls.Where(acc => acc.Role.ToLower() == "member"
                 && acc.EndDate <= DateOnly.FromDateTime(DateTime.Now)).ToList();
             foreach (var account in expiredMemberships)
             {
