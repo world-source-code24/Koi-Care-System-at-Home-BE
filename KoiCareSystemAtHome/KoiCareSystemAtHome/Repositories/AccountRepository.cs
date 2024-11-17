@@ -1,18 +1,22 @@
 ﻿using KoiCareSystemAtHome.Entities;
 using KoiCareSystemAtHome.Models;
 using KoiCareSystemAtHome.Repositories.IRepositories;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 
 namespace KoiCareSystemAtHome.Repositories
 {
     public class AccountRepository : GenericRepository<AccountTbl>, IAccountRepository
     {
         private readonly KoicareathomeContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AccountRepository (KoicareathomeContext context) : base(context)
+        public AccountRepository (KoicareathomeContext context, IConfiguration configuration) : base(context)
         {
             _context = context;
+            _configuration = configuration;
         }
         //Register Email
         public async Task<bool> RegisterAccount(AccountDTO account)
@@ -205,6 +209,53 @@ namespace KoiCareSystemAtHome.Repositories
             //{
             //    return false;
             //}
+        }
+
+        public async Task UpdateAndCheckAllUserRole()
+        {
+            var expiredMemberships = _context.AccountTbls.Where(acc => acc.Role.Equals("member", StringComparison.OrdinalIgnoreCase)
+                && acc.EndDate <= DateOnly.FromDateTime(DateTime.Now)).ToList();
+            foreach (var account in expiredMemberships)
+            {
+                account.Role = "guest";
+            }
+            await _context.SaveChangesAsync();
+        }
+        private async Task SendExpirationEmailAsync(string emailAddress)
+        {
+            try
+            {
+                var email = new MimeMessage();
+                email.From.Add(new MailboxAddress("KoiCare", _configuration["EmailSettings:FromAddress"]));
+                email.To.Add(new MailboxAddress("User", emailAddress));
+                email.Subject = "Membership Expired";
+
+                email.Body = new TextPart("html")
+                {
+                    Text = $"<h2>Your Membership Has Expired</h2>" +
+                           $"<p>Dear user,</p>" +
+                           $"<p>Your membership has expired. If you wish to renew your membership, please log in to your account and select a membership package.</p>"
+                };
+
+                var smtpHost = _configuration["EmailSettings:SmtpServer"];
+                var smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"]);
+                var smtpUser = _configuration["EmailSettings:SmtpUser"];
+                var smtpPassword = _configuration["EmailSettings:SmtpPassword"];
+
+                using (var smtp = new SmtpClient())
+                {
+                    await smtp.ConnectAsync(smtpHost, smtpPort, false);
+                    await smtp.AuthenticateAsync(smtpUser, smtpPassword);
+                    await smtp.SendAsync(email);
+                    await smtp.DisconnectAsync(true);
+                }
+
+                Console.WriteLine($"Expiration email sent to {emailAddress}.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send expiration email to {emailAddress}. Error: {ex.Message}");
+            }
         }
     }
 }

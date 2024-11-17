@@ -47,6 +47,7 @@ builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
 builder.Services.AddScoped<ICalculatorRepository, CalculatorRepository>();
+builder.Services.AddHostedService<MembershipCheckRepository>();
 
 //Enum
 builder.Services.AddScoped<AllEnum>();

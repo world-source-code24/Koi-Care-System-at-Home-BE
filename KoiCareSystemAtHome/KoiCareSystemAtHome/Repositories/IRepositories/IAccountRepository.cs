@@ -28,5 +28,6 @@ namespace KoiCareSystemAtHome.Repositories.IRepositories
         // Update role guest va member.
         Task<bool> UpdateRole(int id, bool check);
         Task<bool> BuyMembership(int accId);
+        Task UpdateAndCheckAllUserRole();
     }
 }
